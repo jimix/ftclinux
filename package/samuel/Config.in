@@ -1,0 +1,18 @@
+config SAMUEL_GIT
+	bool "Get sources from a git repository"
+	default y
+
+config SAMUEL_GIT_REPO
+       string "path to git repo"
+       depends on SAMUEL_GIT
+       default "git@bitbucket.org:ftcengineering/samuel.git"
+
+config SAMUEL_DIR
+	string "path to a local source tree using rsync"
+	depends on !SAMUEL_GIT
+	help
+	  Where to find a local copy of the samantha src tree.  If empty,
+	  it will grab it from the master git repo.  This is useful for
+	  samuel developers who are testing local changes.
+
+	  If unsure, leave empty
