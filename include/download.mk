@@ -17,7 +17,9 @@ $(strip \
           $(if $(filter cvs://%,$(1)),cvs, \
             $(if $(filter hg://%,$(1)),hg, \
               $(if $(filter sftp://%,$(1)),bzr, \
-                unknown \
+		$(if (filter rsync://%,$(1)),rsync, \
+                  unknown \
+		) \
               ) \
             ) \
           ) \
@@ -78,6 +80,18 @@ define DownloadMethod/svn
 		mv $(TMP_DIR)/dl/$(FILE) $(DL_DIR)/ && \
 		rm -rf $(SUBDIR); \
 	)
+endef
+
+define DownloadMethod/rsync
+        $(call wrap_mirror, \
+                echo "Copying over files using rysnc..."; \
+                mkdir -p $(TMP_DIR)/dl && \
+                cd $(TMP_DIR)/dl && \
+                rsync -a $(URL)/ $(SUBDIR) && \
+                echo "Packing rsync..." && \
+                $(call dl_pack,$(TMP_DIR)/dl/$(FILE),$(SUBDIR)) && \
+                mv $(TMP_DIR)/dl/$(FILE) $(DL_DIR)/ \
+        )
 endef
 
 define DownloadMethod/git
