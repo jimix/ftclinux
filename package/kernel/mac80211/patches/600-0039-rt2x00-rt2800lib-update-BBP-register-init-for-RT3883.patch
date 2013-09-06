@@ -1,0 +1,87 @@
+From 15a09251ace92abd54b6448bd2b3fdcce4dda8cd Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 30 Sep 2013 15:27:21 +0200
+Subject: [PATCH 39/40] rt2x00: rt2800lib: update BBP register init for RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |   38 ++++++++++++++++++++++++-------
+ 1 file changed, 30 insertions(+), 8 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -5693,43 +5693,65 @@ static void rt2800_init_bbp_3390(struct
+ static void rt2800_init_bbp_3883(struct rt2x00_dev *rt2x00dev)
+ {
+ 	rt2800_bbp_write(rt2x00dev, 4, 0x50);
+-
+ 	rt2800_bbp_write(rt2x00dev, 47, 0x48);
+ 
++#if 0
+ 	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+ 	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+ 
+ 	rt2800_bbp_write(rt2x00dev, 68, 0x0b);
++#endif
+ 
++	/* BBP69,70,73 values were taken from BBPAdjust */
+ 	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+-	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+-
+ 	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
++	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+ 
++#if 0
+ 	rt2800_bbp_write(rt2x00dev, 81, 0x37);
+ 
+ 	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+ 	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+ 
+ 	rt2800_bbp_write(rt2x00dev, 84, 0x99);
++#endif
+ 
+ 	rt2800_bbp_write(rt2x00dev, 86, 0x46);
+-
+ 	rt2800_bbp_write(rt2x00dev, 88, 0x90);
+ 
++#if 0
+ 	rt2800_bbp_write(rt2x00dev, 91, 0x04);
++#endif
+ 
+ 	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+ 
+ 	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+-
+ 	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+-
+ 	rt2800_bbp_write(rt2x00dev, 105, 0x34);
+-
+-	rt2800_bbp_write(rt2x00dev, 106, 0x05);
+-
++	rt2800_bbp_write(rt2x00dev, 106, 0x12);
+ 	rt2800_bbp_write(rt2x00dev, 120, 0x50);
++	rt2800_bbp_write(rt2x00dev, 137, 0x0f);
++	rt2800_bbp_write(rt2x00dev, 163, 0x9d);
++
++	/* Set ITxBF timeout to 0x9C40=1000msec */
++	rt2800_bbp_write(rt2x00dev, 179, 0x02);
++	rt2800_bbp_write(rt2x00dev, 180, 0x00);
++	rt2800_bbp_write(rt2x00dev, 182, 0x40);
++	rt2800_bbp_write(rt2x00dev, 180, 0x01);
++	rt2800_bbp_write(rt2x00dev, 182, 0x9C);
++
++	rt2800_bbp_write(rt2x00dev, 179, 0x00);
++
++	/* Reprogram the inband interface to put right values in RXWI */
++	rt2800_bbp_write(rt2x00dev, 142, 0x04);
++	rt2800_bbp_write(rt2x00dev, 143, 0x3b);
++	rt2800_bbp_write(rt2x00dev, 142, 0x06);
++	rt2800_bbp_write(rt2x00dev, 143, 0xa0);
++	rt2800_bbp_write(rt2x00dev, 142, 0x07);
++	rt2800_bbp_write(rt2x00dev, 143, 0xa1);
++	rt2800_bbp_write(rt2x00dev, 142, 0x08);
++	rt2800_bbp_write(rt2x00dev, 143, 0xa2);
++	rt2800_bbp_write(rt2x00dev, 148, 0xc8);
+ }
+ 
+ static void rt2800_init_bbp_3572(struct rt2x00_dev *rt2x00dev)

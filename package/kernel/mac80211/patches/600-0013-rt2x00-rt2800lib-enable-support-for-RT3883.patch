@@ -1,0 +1,20 @@
+From cbc0953d4f12e5410223ac0268bdd41716c412fd Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Sun, 24 Mar 2013 19:26:26 +0100
+Subject: [PATCH 13/40] rt2x00: rt2800lib: enable support for RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -7827,6 +7827,7 @@ static int rt2800_probe_rt(struct rt2x00
+ 	case RT3390:
+ 	case RT3572:
+ 	case RT3593:
++	case RT3883:
+ 	case RT5390:
+ 	case RT5392:
+ 	case RT5592:
