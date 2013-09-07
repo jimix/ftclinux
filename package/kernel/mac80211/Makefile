@@ -262,7 +262,7 @@ endef
 
 define KernelPackage/rt2x00-soc
 $(call KernelPackage/rt2x00/Default)
-  DEPENDS+=@TARGET_ramips_rt305x +kmod-rt2x00-mmio +kmod-rt2x00-lib
+  DEPENDS+=@(TARGET_ramips_rt305x||TARGET_ramips_rt3883) +kmod-rt2x00-mmio +kmod-rt2x00-lib
   TITLE+= (SoC)
   FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/rt2x00/rt2x00soc.ko
   AUTOLOAD:=$(call AutoProbe,rt2x00soc)
@@ -317,7 +317,7 @@ endef
 
 define KernelPackage/rt2800-pci
 $(call KernelPackage/rt2x00/Default)
-  DEPENDS+= @(PCI_SUPPORT||TARGET_ramips_rt305x) +PCI_SUPPORT:kmod-rt2x00-pci +kmod-rt2800-lib +kmod-lib-crc-ccitt +TARGET_ramips_rt305x:kmod-rt2x00-soc
+  DEPENDS+= @(PCI_SUPPORT||TARGET_ramips_rt305x||TARGET_ramips_rt3883) +PCI_SUPPORT:kmod-rt2x00-pci +kmod-rt2800-lib +kmod-lib-crc-ccitt +TARGET_ramips_rt305x:kmod-rt2x00-soc +TARGET_ramips_rt3883:kmod-rt2x00-soc
   TITLE+= (RT2860 PCI)
   FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/rt2x00/rt2800pci.ko
   AUTOLOAD:=$(call AutoProbe,rt2800pci)
