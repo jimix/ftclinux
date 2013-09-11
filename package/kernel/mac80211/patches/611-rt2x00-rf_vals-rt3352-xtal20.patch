@@ -1,7 +1,7 @@
 --- a/drivers/net/wireless/rt2x00/rt2800lib.c
 +++ b/drivers/net/wireless/rt2x00/rt2800lib.c
-@@ -7509,6 +7509,27 @@ static const struct rf_channel rf_vals_3
- 	{173, 0x61, 0, 9},
+@@ -8149,6 +8149,27 @@ static const struct rf_channel rf_vals_3
+ 	{173, 0x61, 8, 9},
  };
  
 +/*
@@ -28,7 +28,7 @@
  static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
  {
  	struct hw_mode_spec *spec = &rt2x00dev->spec;
-@@ -7589,7 +7610,6 @@ static int rt2800_probe_hw_mode(struct r
+@@ -8229,7 +8250,6 @@ static int rt2800_probe_hw_mode(struct r
  		   rt2x00_rf(rt2x00dev, RF3022) ||
  		   rt2x00_rf(rt2x00dev, RF3290) ||
  		   rt2x00_rf(rt2x00dev, RF3320) ||
@@ -36,7 +36,7 @@
  		   rt2x00_rf(rt2x00dev, RF5360) ||
  		   rt2x00_rf(rt2x00dev, RF5370) ||
  		   rt2x00_rf(rt2x00dev, RF5372) ||
-@@ -7597,6 +7617,12 @@ static int rt2800_probe_hw_mode(struct r
+@@ -8237,6 +8257,12 @@ static int rt2800_probe_hw_mode(struct r
  		   rt2x00_rf(rt2x00dev, RF5392)) {
  		spec->num_channels = 14;
  		spec->channels = rf_vals_3x;
@@ -49,7 +49,7 @@
  	} else if (rt2x00_rf(rt2x00dev, RF3052)) {
  		spec->supported_bands |= SUPPORT_BAND_5GHZ;
  		spec->num_channels = ARRAY_SIZE(rf_vals_3x);
-@@ -7769,6 +7795,19 @@ static int rt2800_probe_rt(struct rt2x00
+@@ -8415,6 +8441,19 @@ static int rt2800_probe_rt(struct rt2x00
  	return 0;
  }
  
@@ -68,8 +68,8 @@
 +
  int rt2800_probe_hw(struct rt2x00_dev *rt2x00dev)
  {
- 	int retval;
-@@ -7798,6 +7837,15 @@ int rt2800_probe_hw(struct rt2x00_dev *r
+ 	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+@@ -8457,6 +8496,15 @@ int rt2800_probe_hw(struct rt2x00_dev *r
  	rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
  
  	/*
