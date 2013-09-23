@@ -58,8 +58,13 @@
 	};
 
 	ethernet@10100000 {
-		phy-handle = <&phy0>;
-		phy-mode = "rgmii";
+		port@0 {
+			compatible = "ralink,rt3883-port", "ralink,eth-port";
+			reg = <0>;
+
+			phy-handle = <&phy0>;
+			phy-mode = "rgmii";
+		};
 
 		mdio-bus {
 			status = "okay";
