@@ -28,6 +28,7 @@ rt2x00_eeprom_extract() {
 board=$(ramips_board_name)
 
 case "$FIRMWARE" in
+"10180000.wmac-rt2800.eeprom" |\
 "soc_wmac.eeprom")
 	case $board in
 	asl26555 | \
@@ -125,11 +126,16 @@ case "$FIRMWARE" in
 	esac
 	;;
 
-"rt2x00pci_1_0.eeprom")
+"rt2x00pci_1_0.eeprom"|\
+"0000:01:00.0-rt2800.eeprom")
 	case $board in
 	rt-n56u)
 		rt2x00_eeprom_extract "factory" 32768 512
 		;;
 	esac
+	;;
+
+*)
+	rt2x00_eeprom_die "unsupported firmware: $FIRMWARE"
 	;;
 esac
