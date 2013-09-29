@@ -1,0 +1,106 @@
+--- a/drivers/net/ethernet/ralink/mdio.c
++++ b/drivers/net/ethernet/ralink/mdio.c
+@@ -76,32 +76,42 @@ static void fe_phy_link_adjust(struct ne
+ 	spin_unlock_irqrestore(&priv->phy->lock, flags);
+ }
+ 
+-int fe_connect_phy_node(struct fe_priv *priv, struct device_node *phy_node)
++int fe_connect_phy_node(struct fe_priv *priv, struct device_node *port_node)
+ {
+ 	const __be32 *_port = NULL;
+ 	struct phy_device *phydev;
++	struct device_node *phy_node;
+ 	int phy_mode, port;
+ 
+-	_port = of_get_property(phy_node, "reg", NULL);
+-
+-	if (!_port || (be32_to_cpu(*_port) >= 8)) {
+-		pr_err("%s: invalid port id\n", phy_node->name);
++	_port = of_get_property(port_node, "reg", NULL);
++	if (!_port) {
++		pr_err("%s: no reg property found\n", port_node->name);
+ 		return -EINVAL;
+ 	}
++
+ 	port = be32_to_cpu(*_port);
+-	phy_mode = of_get_phy_mode(phy_node);
++	if (port >= 8) {
++		pr_err("%s: invalid port id %d\n", port_node->name, port);
++		return -EINVAL;
++	}
++
++	phy_mode = of_get_phy_mode(port_node);
+ 	if (phy_mode < 0) {
+ 		dev_err(priv->device, "incorrect phy-mode %d\n", phy_mode);
+-		priv->phy->phy_node[port] = NULL;
+ 		return -EINVAL;
+ 	}
+ 
++	phy_node = of_parse_phandle(port_node, "phy-handle", 0);
++	if (!phy_node) {
++		dev_err(priv->device, "unable to get PHY node\n");
++		return -ENODEV;
++	}
++
+ 	phydev = of_phy_connect(priv->netdev, phy_node, fe_phy_link_adjust,
+ 				0, phy_mode);
+-	if (IS_ERR(phydev)) {
++	if (phydev == NULL) {
+ 		dev_err(priv->device, "could not connect to PHY\n");
+-		priv->phy->phy_node[port] = NULL;
+-		return PTR_ERR(phydev);
++		return -ENODEV;
+ 	}
+ 
+ 	phydev->supported &= PHY_GBIT_FEATURES;
+@@ -113,6 +123,7 @@ int fe_connect_phy_node(struct fe_priv *
+ 		 port, dev_name(&phydev->dev), phydev->phy_id,
+ 		 phydev->drv->name);
+ 
++	priv->phy->phy_node[port] = phy_node;
+ 	priv->phy->phy[port] = phydev;
+ 	priv->link[port] = 0;
+ 
+--- a/drivers/net/ethernet/ralink/mdio.h
++++ b/drivers/net/ethernet/ralink/mdio.h
+@@ -21,9 +21,15 @@
+ #ifdef CONFIG_NET_RALINK_MDIO
+ extern int fe_mdio_init(struct fe_priv *priv);
+ extern void fe_mdio_cleanup(struct fe_priv *priv);
+-extern int fe_connect_phy_node(struct fe_priv *priv, struct device_node *phy_node);
++extern int fe_connect_phy_node(struct fe_priv *priv,
++			       struct device_node *port_node);
+ #else
+ static inline int fe_mdio_init(struct fe_priv *priv) { return 0; }
+ static inline void fe_mdio_cleanup(struct fe_priv *priv) {}
++static inline int fe_connect_phy_node(struct fe_priv *priv,
++				      struct device_node *port_node)
++{
++	return -ENODEV;
++}
+ #endif
+ #endif
+--- a/drivers/net/ethernet/ralink/mdio_rt2880.c
++++ b/drivers/net/ethernet/ralink/mdio_rt2880.c
+@@ -136,8 +136,8 @@ int rt2880_mdio_read(struct mii_bus *bus
+ 	if (err)
+ 		return 0xffff;
+ 
+-	pr_info("%s: addr=%04x, reg=%04x, value=%04x\n", __func__,
+-		phy_addr, phy_reg, fe_r32(FE_MDIO_ACCESS) & 0xffff);
++	pr_debug("%s: addr=%04x, reg=%04x, value=%04x\n", __func__,
++		 phy_addr, phy_reg, fe_r32(FE_MDIO_ACCESS) & 0xffff);
+ 
+ 	return fe_r32(FE_MDIO_ACCESS) & 0xffff;
+ }
+@@ -148,8 +148,8 @@ int rt2880_mdio_write(struct mii_bus *bu
+ 	int err;
+ 	u32 t;
+ 
+-	pr_info("%s: addr=%04x, reg=%04x, value=%04x\n", __func__,
+-		phy_addr, phy_reg, fe_r32(FE_MDIO_ACCESS) & 0xffff);
++	pr_debug("%s: addr=%04x, reg=%04x, value=%04x\n", __func__,
++		 phy_addr, phy_reg, fe_r32(FE_MDIO_ACCESS) & 0xffff);
+ 
+ 	err = rt2880_mdio_wait_ready(priv);
+ 	if (err)
