@@ -1,0 +1,23 @@
+From 5dc68067522898ef59a2294d826493ae70cf4551 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Sun, 29 Sep 2013 18:10:34 +0200
+Subject: [PATCH 37/44] rt2x00: rt2800lib: use high memory for beacons on
+ RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -99,7 +99,8 @@ static inline void rt2800_shared_mem_sel
+ 
+ static inline bool rt2800_beacon_uses_high_mem(struct rt2x00_dev *rt2x00dev)
+ {
+-	if (rt2x00_rt(rt2x00dev, RT3593))
++	if (rt2x00_rt(rt2x00dev, RT3593) ||
++	    rt2x00_rt(rt2x00dev, RT3883))
+ 		return true;
+ 
+ 	return false;

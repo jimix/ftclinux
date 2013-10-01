@@ -1,0 +1,60 @@
+From c7386b3b5c5d8a896b9c743afbbf598511527efe Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Tue, 1 Oct 2013 10:14:06 +0200
+Subject: [PATCH 02/44] rt2x00: rt2800lib: fix VGC level adjustment for RT3572
+ and RT3593
+
+The Ralink DPO_RT5572_LinuxSTA_2.6.1.3_20121022
+reference driver uses different RSSI threshold
+and VGC adjustment values for the RT3572 and for
+the RT3593 chipsets.
+
+Update the rt2800_link_tuner function to use the
+same values. Also change the comment in the function
+to make it more generic.
+
+References:
+
+  RT35xx_ChipAGCAdjust function in chips/rt35xx.c
+  RSSI_FOR_MID_LOW_SENSIBILITY constant in include/chip/rtmp_phy.h
+  RT3593_R66_MID_LOW_SENS_GET macro in include/chip/rt3593.h
+  RT3593_R66_NON_MID_LOW_SEMS_GET macro in include/chips/rt3593.h
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |   18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -4457,17 +4457,25 @@ void rt2800_link_tuner(struct rt2x00_dev
+ 
+ 	if (rt2x00_rt_rev(rt2x00dev, RT2860, REV_RT2860C))
+ 		return;
+-	/*
+-	 * When RSSI is better then -80 increase VGC level with 0x10, except
+-	 * for rt5592 chip.
++
++	/* When RSSI is better than a certain threshold, increase VGC
++	 * with a chip specific value in order to improve the balance
++	 * between sensibility and noise isolation.
+ 	 */
+ 
+ 	vgc = rt2800_get_default_vgc(rt2x00dev);
+ 
+-	if (rt2x00_rt(rt2x00dev, RT5592) && qual->rssi > -65)
++	if ((rt2x00_rt(rt2x00dev, RT3572) ||
++	     rt2x00_rt(rt2x00dev, RT3593)) && qual->rssi > -65) {
++		if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ)
++			vgc += 0x20;
++		else
++			vgc += 0x10;
++	} else if (rt2x00_rt(rt2x00dev, RT5592) && qual->rssi > -65) {
+ 		vgc += 0x20;
+-	else if (qual->rssi > -80)
++	} else if (qual->rssi > -80) {
+ 		vgc += 0x10;
++	}
+ 
+ 	rt2800_set_vgc(rt2x00dev, qual, vgc);
+ }

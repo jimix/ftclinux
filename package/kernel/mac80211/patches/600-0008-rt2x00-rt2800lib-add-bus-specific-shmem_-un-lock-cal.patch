@@ -1,0 +1,162 @@
+From 26600af88279fd364c9f0f2712b4238d5c72286a Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Wed, 21 Aug 2013 22:42:00 +0200
+Subject: [PATCH 08/44] rt2x00: rt2800lib: add bus specific shmem_{,un}lock
+ callbacks
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    2 +-
+ drivers/net/wireless/rt2x00/rt2800lib.h |   24 +++++++++++++++++++-----
+ drivers/net/wireless/rt2x00/rt2800pci.c |   24 ++++++++++++++++++++++++
+ drivers/net/wireless/rt2x00/rt2800usb.c |   24 ++++++++++++++++++++++++
+ 4 files changed, 68 insertions(+), 6 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -7796,7 +7796,7 @@ int rt2800_probe_hw(struct rt2x00_dev *r
+ 	int retval;
+ 	u32 reg;
+ 
+-	mutex_init(&drv_data->shared_mem_mutex);
++	rt2800_shmem_lock_init(rt2x00dev);
+ 
+ 	retval = rt2800_probe_rt(rt2x00dev);
+ 	if (retval)
+--- a/drivers/net/wireless/rt2x00/rt2800lib.h
++++ b/drivers/net/wireless/rt2x00/rt2800lib.h
+@@ -38,7 +38,10 @@ struct rt2800_drv_data {
+ 
+ 	unsigned long rt2800_flags;
+ 
+-	struct mutex shared_mem_mutex;
++	union {
++		spinlock_t spin;
++		struct mutex mutex;
++	} shmem_lock;
+ };
+ 
+ struct rt2800_ops {
+@@ -69,8 +72,19 @@ struct rt2800_ops {
+ 				  const u8 *data, const size_t len);
+ 	int (*drv_init_registers)(struct rt2x00_dev *rt2x00dev);
+ 	__le32 *(*drv_get_txwi)(struct queue_entry *entry);
++
++	void (*shmem_lock_init)(struct rt2x00_dev *rt2x00dev);
++	void (*shmem_lock)(struct rt2x00_dev *rt2x00dev);
++	void (*shmem_unlock)(struct rt2x00_dev *rt2x00dev);
+ };
+ 
++static inline void rt2800_shmem_lock_init(struct rt2x00_dev *rt2x00dev)
++{
++	const struct rt2800_ops *rt2800ops = rt2x00dev->ops->drv;
++
++	rt2800ops->shmem_lock_init(rt2x00dev);
++}
++
+ static inline bool rt2800_has_high_shared_mem(struct rt2x00_dev *rt2x00dev)
+ {
+ 	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+@@ -80,18 +94,18 @@ static inline bool rt2800_has_high_share
+ 
+ static inline void rt2800_shared_mem_lock(struct rt2x00_dev *rt2x00dev)
+ {
+-	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++	const struct rt2800_ops *rt2800ops = rt2x00dev->ops->drv;
+ 
+ 	if (rt2800_has_high_shared_mem(rt2x00dev))
+-		mutex_lock(&drv_data->shared_mem_mutex);
++		rt2800ops->shmem_lock(rt2x00dev);
+ }
+ 
+ static inline void rt2800_shared_mem_unlock(struct rt2x00_dev *rt2x00dev)
+ {
+-	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++	const struct rt2800_ops *rt2800ops = rt2x00dev->ops->drv;
+ 
+ 	if (rt2800_has_high_shared_mem(rt2x00dev))
+-		mutex_unlock(&drv_data->shared_mem_mutex);
++		rt2800ops->shmem_unlock(rt2x00dev);
+ }
+ 
+ static inline void rt2800_register_read(struct rt2x00_dev *rt2x00dev,
+--- a/drivers/net/wireless/rt2x00/rt2800pci.c
++++ b/drivers/net/wireless/rt2x00/rt2800pci.c
+@@ -60,6 +60,27 @@ static bool rt2800pci_hwcrypt_disabled(s
+ 	return modparam_nohwcrypt;
+ }
+ 
++static void rt2800pci_shmem_lock_init(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	spin_lock_init(&drv_data->shmem_lock.spin);
++}
++
++static void rt2800pci_shmem_lock(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	spin_lock_bh(&drv_data->shmem_lock.spin);
++}
++
++static void rt2800pci_shmem_unlock(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	spin_unlock_bh(&drv_data->shmem_lock.spin);
++}
++
+ static void rt2800pci_mcu_status(struct rt2x00_dev *rt2x00dev, const u8 token)
+ {
+ 	unsigned int i;
+@@ -1207,6 +1228,9 @@ static const struct rt2800_ops rt2800pci
+ 	.drv_write_firmware	= rt2800pci_write_firmware,
+ 	.drv_init_registers	= rt2800pci_init_registers,
+ 	.drv_get_txwi		= rt2800pci_get_txwi,
++	.shmem_lock_init	= rt2800pci_shmem_lock_init,
++	.shmem_lock		= rt2800pci_shmem_lock,
++	.shmem_unlock		= rt2800pci_shmem_unlock,
+ };
+ 
+ static const struct rt2x00lib_ops rt2800pci_rt2x00_ops = {
+--- a/drivers/net/wireless/rt2x00/rt2800usb.c
++++ b/drivers/net/wireless/rt2x00/rt2800usb.c
+@@ -54,6 +54,27 @@ static bool rt2800usb_hwcrypt_disabled(s
+ 	return modparam_nohwcrypt;
+ }
+ 
++static void rt2800usb_shmem_lock_init(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	mutex_init(&drv_data->shmem_lock.mutex);
++}
++
++static void rt2800usb_shmem_lock(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	mutex_lock(&drv_data->shmem_lock.mutex);
++}
++
++static void rt2800usb_shmem_unlock(struct rt2x00_dev *rt2x00dev)
++{
++	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
++
++	mutex_unlock(&drv_data->shmem_lock.mutex);
++}
++
+ /*
+  * Queue handlers.
+  */
+@@ -816,6 +837,9 @@ static const struct rt2800_ops rt2800usb
+ 	.drv_write_firmware	= rt2800usb_write_firmware,
+ 	.drv_init_registers	= rt2800usb_init_registers,
+ 	.drv_get_txwi		= rt2800usb_get_txwi,
++	.shmem_lock_init	= rt2800usb_shmem_lock_init,
++	.shmem_lock		= rt2800usb_shmem_lock,
++	.shmem_unlock		= rt2800usb_shmem_unlock,
+ };
+ 
+ static const struct rt2x00lib_ops rt2800usb_rt2x00_ops = {

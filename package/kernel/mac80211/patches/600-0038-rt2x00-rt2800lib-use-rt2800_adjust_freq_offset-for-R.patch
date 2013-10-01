@@ -1,0 +1,28 @@
+From 2fed10e860845d8bd993e6c3e4ae06cb19cbd6fe Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 30 Sep 2013 13:23:19 +0200
+Subject: [PATCH 38/44] rt2x00: rt2800lib: use rt2800_adjust_freq_offset for
+ RF3853
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -2675,13 +2675,7 @@ static void rt2800_config_channel_rf3853
+ 		rfcsr &= ~(0x0 << 6);
+ 	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+ 
+-	/*
+-	 * the layout of the R17 register is the same as
+-	 * the layout of the R23 register on RT30xx
+-	 */
+-	rt2800_rfcsr_read(rt2x00dev, 17, &rfcsr);
+-	rt2x00_set_field8(&rfcsr, RFCSR23_FREQ_OFFSET, rt2x00dev->freq_offset);
+-	rt2800_rfcsr_write(rt2x00dev, 17, rfcsr);
++	rt2800_adjust_freq_offset(rt2x00dev);
+ 
+ 	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
+ 	/* FIXME: needs revisit */

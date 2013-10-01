@@ -1,0 +1,59 @@
+From 1b5b98a18fb3ef6ce834b1394c762fded7ba6406 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Wed, 27 Mar 2013 15:45:24 +0100
+Subject: [PATCH 13/44] rt2x00: rt2800pci: allow to load eeprom file via
+ firmware api
+
+---
+ drivers/net/wireless/rt2x00/rt2800pci.c |   33 +++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+--- a/drivers/net/wireless/rt2x00/rt2800pci.c
++++ b/drivers/net/wireless/rt2x00/rt2800pci.c
+@@ -225,6 +225,35 @@ static inline int rt2800pci_read_eeprom_
+ }
+ #endif /* CONFIG_PCI */
+ 
++static int rt2800pci_read_eeprom_file(struct rt2x00_dev *rt2x00dev)
++{
++	char name[64];
++	const struct firmware *blob;
++	int retval;
++
++	scnprintf(name, sizeof(name), "%s-rt2800.eeprom",
++		  dev_name(rt2x00dev->dev));
++
++	retval = request_firmware(&blob, name, rt2x00dev->dev);
++	if (retval < 0)
++		return retval;
++
++	if (blob->size < EEPROM_SIZE) {
++		rt2x00_err(rt2x00dev, "EEPROM file '%s' is too small\n", name);
++		retval = -EINVAL;
++		goto release_fw;
++	}
++
++	memcpy(rt2x00dev->eeprom, blob->data, EEPROM_SIZE);
++	retval = 0;
++
++	rt2x00_info(rt2x00dev, "EEPROM data loaded from '%s'\n", name);
++
++release_fw:
++	release_firmware(blob);
++	return retval;
++}
++
+ /*
+  * Queue handlers.
+  */
+@@ -1178,6 +1207,10 @@ static int rt2800pci_read_eeprom(struct
+ {
+ 	int retval;
+ 
++	retval = rt2800pci_read_eeprom_file(rt2x00dev);
++	if (!retval)
++		return 0;
++
+ 	if (rt2x00_is_soc(rt2x00dev))
+ 		retval = rt2800pci_read_eeprom_soc(rt2x00dev);
+ 	else if (rt2800pci_efuse_detect(rt2x00dev))

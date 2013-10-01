@@ -1,0 +1,61 @@
+From f7b62a9ffcfb2e5f92f89d606985cda3097f79c3 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Sun, 24 Mar 2013 19:26:28 +0100
+Subject: [PATCH 27/44] rt2x00: rt2800lib: add RT3883 support into
+ rt2800_config_channel
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |   17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -3473,6 +3473,9 @@ static void rt2800_config_channel(struct
+ 		rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
+ 		rt2800_bbp_write(rt2x00dev, 64, 0x37 - rt2x00dev->lna_gain);
+ 		rt2800_bbp_write(rt2x00dev, 77, 0x98);
++	} else if (rt2x00_rt(rt2x00dev, RT3883)) {
++		/* FIXME: RxStream > 1 needs different value */
++		rt2800_bbp_write(rt2x00dev, 86, 0);
+ 	} else {
+ 		rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
+ 		rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
+@@ -3485,7 +3488,10 @@ static void rt2800_config_channel(struct
+ 		    !rt2x00_rt(rt2x00dev, RT5392)) {
+ 			if (test_bit(CAPABILITY_EXTERNAL_LNA_BG,
+ 				     &rt2x00dev->cap_flags)) {
+-				rt2800_bbp_write(rt2x00dev, 82, 0x62);
++				if (rt2x00_rt(rt2x00dev, RT3883))
++					rt2800_bbp_write(rt2x00dev, 82, 0x82);
++				else
++					rt2800_bbp_write(rt2x00dev, 82, 0x62);
+ 				rt2800_bbp_write(rt2x00dev, 75, 0x46);
+ 			} else {
+ 				if (rt2x00_rt(rt2x00dev, RT3593))
+@@ -3494,19 +3500,22 @@ static void rt2800_config_channel(struct
+ 					rt2800_bbp_write(rt2x00dev, 82, 0x84);
+ 				rt2800_bbp_write(rt2x00dev, 75, 0x50);
+ 			}
+-			if (rt2x00_rt(rt2x00dev, RT3593))
++			if (rt2x00_rt(rt2x00dev, RT3593) ||
++			    rt2x00_rt(rt2x00dev, RT3883))
+ 				rt2800_bbp_write(rt2x00dev, 83, 0x8a);
+ 		}
+ 
+ 	} else {
+ 		if (rt2x00_rt(rt2x00dev, RT3572))
+ 			rt2800_bbp_write(rt2x00dev, 82, 0x94);
+-		else if (rt2x00_rt(rt2x00dev, RT3593))
++		else if (rt2x00_rt(rt2x00dev, RT3593) ||
++			 rt2x00_rt(rt2x00dev, RT3883))
+ 			rt2800_bbp_write(rt2x00dev, 82, 0x82);
+ 		else
+ 			rt2800_bbp_write(rt2x00dev, 82, 0xf2);
+ 
+-		if (rt2x00_rt(rt2x00dev, RT3593))
++		if (rt2x00_rt(rt2x00dev, RT3593) ||
++		    rt2x00_rt(rt2x00dev, RT3883))
+ 			rt2800_bbp_write(rt2x00dev, 83, 0x9a);
+ 
+ 		if (test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags))

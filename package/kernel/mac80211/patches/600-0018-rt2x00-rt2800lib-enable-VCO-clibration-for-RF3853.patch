@@ -1,0 +1,28 @@
+From 95a2bd115272ee8782005b4d9ede1f660fd92cba Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Thu, 1 Aug 2013 14:40:44 +0200
+Subject: [PATCH 18/44] rt2x00: rt2800lib: enable VCO clibration for RF3853
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -4342,6 +4342,7 @@ void rt2800_vco_calibration(struct rt2x0
+ 		break;
+ 	case RF3053:
+ 	case RF3290:
++	case RF3853:
+ 	case RF5360:
+ 	case RF5370:
+ 	case RF5372:
+@@ -7870,6 +7871,7 @@ static int rt2800_probe_hw_mode(struct r
+ 	case RF3052:
+ 	case RF3053:
+ 	case RF3290:
++	case RF3853:
+ 	case RF5360:
+ 	case RF5370:
+ 	case RF5372:
