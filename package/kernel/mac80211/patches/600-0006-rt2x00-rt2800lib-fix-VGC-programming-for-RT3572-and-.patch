@@ -1,0 +1,43 @@
+From 9df5565ea909aed08c9e2f9a9e6abe6bad14dc8f Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Tue, 1 Oct 2013 10:27:30 +0200
+Subject: [PATCH 06/51] rt2x00: rt2800lib: fix VGC programming for RT3572 and
+ RT3593
+
+According to the DPO_RT5572_LinuxSTA_2.6.1.3_20121022
+reference driver, programming of the 'BBP 66' register
+on the RT3572 and RT3593 chipsets must be done via the
+'rt2800_bbp_write_with_rx_chain' function. This ensures
+that value is correclty set for all RX chains.
+
+References:
+  RT35xx_ChipAGCAdjust and RT35xx_SetAGCInitValue functions
+  in chips/rt35xx.c
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -4442,11 +4442,17 @@ static inline void rt2800_set_vgc(struct
+ 				  struct link_qual *qual, u8 vgc_level)
+ {
+ 	if (qual->vgc_level != vgc_level) {
+-		if (rt2x00_rt(rt2x00dev, RT5592)) {
++		if (rt2x00_rt(rt2x00dev, RT3572) ||
++		    rt2x00_rt(rt2x00dev, RT3593)) {
++			rt2800_bbp_write_with_rx_chain(rt2x00dev, 66,
++						       vgc_level);
++		} else if (rt2x00_rt(rt2x00dev, RT5592)) {
+ 			rt2800_bbp_write(rt2x00dev, 83, qual->rssi > -65 ? 0x4a : 0x7a);
+ 			rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, vgc_level);
+-		} else
++		} else {
+ 			rt2800_bbp_write(rt2x00dev, 66, vgc_level);
++		}
++
+ 		qual->vgc_level = vgc_level;
+ 		qual->vgc_level_reg = vgc_level;
+ 	}

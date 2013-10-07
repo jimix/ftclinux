@@ -1,0 +1,47 @@
+From 50860dff85cca026a3aa45a0c9374b651eff7e48 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Sat, 5 Oct 2013 11:04:46 +0200
+Subject: [PATCH 19/51] rt2x00: rt2800lib: move TX_BAND_CFG register setup
+ into a separate helper
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -3188,6 +3188,20 @@ static char rt2800_txpower_to_dev(struct
+ 		return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
+ }
+ 
++static void rt2800_setup_tx_band_cfg_reg(struct rt2x00_dev *rt2x00dev,
++					 struct ieee80211_conf *conf,
++					 struct rf_channel *rf)
++{
++	u32 reg;
++
++	rt2800_register_read(rt2x00dev, TX_BAND_CFG, &reg);
++	rt2x00_set_field32(&reg, TX_BAND_CFG_HT40_MINUS,
++			   conf_is_ht40_minus(conf));
++	rt2x00_set_field32(&reg, TX_BAND_CFG_A, rf->channel > 14);
++	rt2x00_set_field32(&reg, TX_BAND_CFG_BG, rf->channel <= 14);
++	rt2800_register_write(rt2x00dev, TX_BAND_CFG, reg);
++}
++
+ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
+ 				  struct ieee80211_conf *conf,
+ 				  struct rf_channel *rf,
+@@ -3326,11 +3340,7 @@ static void rt2800_config_channel(struct
+ 			rt2800_bbp_write(rt2x00dev, 75, 0x50);
+ 	}
+ 
+-	rt2800_register_read(rt2x00dev, TX_BAND_CFG, &reg);
+-	rt2x00_set_field32(&reg, TX_BAND_CFG_HT40_MINUS, conf_is_ht40_minus(conf));
+-	rt2x00_set_field32(&reg, TX_BAND_CFG_A, rf->channel > 14);
+-	rt2x00_set_field32(&reg, TX_BAND_CFG_BG, rf->channel <= 14);
+-	rt2800_register_write(rt2x00dev, TX_BAND_CFG, reg);
++	rt2800_setup_tx_band_cfg_reg(rt2x00dev, conf, rf);
+ 
+ 	if (rt2x00_rt(rt2x00dev, RT3572))
+ 		rt2800_rfcsr_write(rt2x00dev, 8, 0);

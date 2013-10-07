@@ -1,0 +1,32 @@
+From 726aa559f519b4ab78c901904b11207d7a5785ad Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Wed, 8 May 2013 19:35:33 +0200
+Subject: [PATCH 32/51] rt2x00: rt2800lib: use the extended EEPROM map for
+ RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -330,7 +330,7 @@ static const unsigned int rt2800_eeprom_
+ 	[EEPROM_TSSI_BOUND_A3]		= 0x009c,
+ 	[EEPROM_TSSI_BOUND_A4]		= 0x009d,
+ 	[EEPROM_TSSI_BOUND_A5]		= 0x009e,
+-	[EEPROM_TXPOWER_BYRATE]		= 0x00a0,
++	[EEPROM_TXPOWER_BYRATE]		= 0x00a0, /* TODO: RT3883 needs 0x00a2? */
+ };
+ 
+ static unsigned int rt2800_eeprom_word_index(struct rt2x00_dev *rt2x00dev,
+@@ -344,7 +344,8 @@ static unsigned int rt2800_eeprom_word_i
+ 		      wiphy_name(rt2x00dev->hw->wiphy), word))
+ 		return 0;
+ 
+-	if (rt2x00_rt(rt2x00dev, RT3593))
++	if (rt2x00_rt(rt2x00dev, RT3593) ||
++	    rt2x00_rt(rt2x00dev, RT3883))
+ 		map = rt2800_eeprom_map_ext;
+ 	else
+ 		map = rt2800_eeprom_map;

@@ -1,0 +1,30 @@
+From eb536b526ca8ea84d00550a7529f5077bbae4c54 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Tue, 1 Oct 2013 18:43:32 +0200
+Subject: [PATCH 02/51] rt2x00: rt2800lib: remove TXPOWER_DELTA entry from
+ extended EEPROM map
+
+The TXPOWER_DELTA field of the regular EEPROM
+stores the TX power compensation value for HT40.
+The extended EEPROM has no such field, it stores
+separate TX power values for HT20 and for HT40.
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+Acked-by: Paul Menzel <paulepanter@users.sourceforge.net>
+---
+Changes since v1:
+  - add Paul's Acked-by tag
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -278,7 +278,6 @@ static const unsigned int rt2800_eeprom_
+ 	[EEPROM_LNA]			= 0x0026,
+ 	[EEPROM_EXT_LNA2]		= 0x0027,
+ 	[EEPROM_RSSI_BG]		= 0x0028,
+-	[EEPROM_TXPOWER_DELTA]		= 0x0028, /* Overlaps with RSSI_BG */
+ 	[EEPROM_RSSI_BG2]		= 0x0029,
+ 	[EEPROM_RSSI_A]			= 0x002a,
+ 	[EEPROM_RSSI_A2]		= 0x002b,
