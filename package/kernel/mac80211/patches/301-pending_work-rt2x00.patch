@@ -1,4 +1,4 @@
-Contains the following changes from wireless-testing/master-2013-08-26:
+Contains the following changes from wireless-testing/master-2013-10-03:
 
   commit 8951b79a4e6d8228babf56ae79a345e4abc5ac82
   Author: Gabor Juhos <juhosg@openwrt.org>
@@ -234,6 +234,54 @@ Contains the following changes from wireless-testing/master-2013-08-26:
 
       rt2800: fix wrong TX power compensation
 
+  commit 708ff0835343c0696e69888943be05efd12fe7c6
+  Author: Masami Ichikawa <masami256@gmail.com>
+  Date:   Wed Aug 28 00:37:23 2013 +0900
+
+      rt2800usb: Add WLI-UC-G300HP's Product ID.
+
+  commit 6557d3070ac0a3ac563e6df86ced29d627e9a7f2
+  Author: Stanislaw Gruszka <sgruszka@redhat.com>
+  Date:   Mon Sep 9 12:37:37 2013 +0200
+
+      rt2800: change initialization sequence to fix system freeze
+
+  commit 61edc7fad65c80e9f8ddf522339c1d2d91c6328d
+  Author: Stanislaw Gruszka <sgruszka@redhat.com>
+  Date:   Mon Sep 9 12:37:38 2013 +0200
+
+      rt2800: comment enable radio initialization sequence
+
+  commit 60751001e814cd70220fee7868c5a0368bdf984a
+  Author: Gabor Juhos <juhosg@openwrt.org>
+  Date:   Wed Sep 11 19:56:45 2013 +0200
+
+      rt2x00: rt2800lib: fix band selection and LNA PE control for RT3593 PCIe cards
+
+  commit 772eb433357704ec3d6e0daa727d9ec3e85f50c1
+  Author: Kevin Lo <kevlo@kevlo.org>
+  Date:   Wed Sep 18 16:22:44 2013 +0800
+
+      rt2x00: Fix rf register for RT3070
+
+  commit dfb6b7c109a7f98d324a759599d1b4616f02c79f
+  Author: Stanislaw Gruszka <sgruszka@redhat.com>
+  Date:   Mon Sep 23 04:08:13 2013 +0200
+
+      Revert "rt2x00pci: Use PCI MSIs whenever possible"
+
+  commit 3b9b74baa1af2952d719735b4a4a34706a593948
+  Author: Stanislaw Gruszka <sgruszka@redhat.com>
+  Date:   Wed Sep 25 15:34:55 2013 +0200
+
+      rt2800: add support for radio chip RF3070
+
+  commit 274dede8c52036a1849ea970fab8d185fb0dce2b
+  Author: Xose Vazquez Perez <xose.vazquez@gmail.com>
+  Date:   Sat Sep 28 13:07:10 2013 +0200
+
+      wireless: rt2x00: rt2800usb: add new devices
+
 ---
 --- a/drivers/net/wireless/rt2x00/Kconfig
 +++ b/drivers/net/wireless/rt2x00/Kconfig
@@ -252,7 +300,23 @@ Contains the following changes from wireless-testing/master-2013-08-26:
         ---help---
 --- a/drivers/net/wireless/rt2x00/rt2800.h
 +++ b/drivers/net/wireless/rt2x00/rt2800.h
-@@ -88,6 +88,7 @@
+@@ -52,6 +52,7 @@
+  * RF3322 2.4G 2T2R(RT3352/RT3371/RT3372/RT3391/RT3392)
+  * RF3053 2.4G/5G 3T3R(RT3883/RT3563/RT3573/RT3593/RT3662)
+  * RF5592 2.4G/5G 2T2R
++ * RF3070 2.4G 1T1R
+  * RF5360 2.4G 1T1R
+  * RF5370 2.4G 1T1R
+  * RF5390 2.4G 1T1R
+@@ -70,6 +71,7 @@
+ #define RF3322				0x000c
+ #define RF3053				0x000d
+ #define RF5592				0x000f
++#define RF3070				0x3070
+ #define RF3290				0x3290
+ #define RF5360				0x5360
+ #define RF5370				0x5370
+@@ -88,6 +90,7 @@
  #define REV_RT3071E			0x0211
  #define REV_RT3090E			0x0211
  #define REV_RT3390E			0x0211
@@ -260,7 +324,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define REV_RT5390F			0x0502
  #define REV_RT5390R			0x1502
  #define REV_RT5592C			0x0221
-@@ -1082,6 +1083,15 @@
+@@ -1082,6 +1085,15 @@
  #define TX_PWR_CFG_0_9MBS		FIELD32(0x00f00000)
  #define TX_PWR_CFG_0_12MBS		FIELD32(0x0f000000)
  #define TX_PWR_CFG_0_18MBS		FIELD32(0xf0000000)
@@ -276,7 +340,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * TX_PWR_CFG_1:
-@@ -1095,6 +1105,15 @@
+@@ -1095,6 +1107,15 @@
  #define TX_PWR_CFG_1_MCS1		FIELD32(0x00f00000)
  #define TX_PWR_CFG_1_MCS2		FIELD32(0x0f000000)
  #define TX_PWR_CFG_1_MCS3		FIELD32(0xf0000000)
@@ -292,7 +356,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * TX_PWR_CFG_2:
-@@ -1108,6 +1127,15 @@
+@@ -1108,6 +1129,15 @@
  #define TX_PWR_CFG_2_MCS9		FIELD32(0x00f00000)
  #define TX_PWR_CFG_2_MCS10		FIELD32(0x0f000000)
  #define TX_PWR_CFG_2_MCS11		FIELD32(0xf0000000)
@@ -308,7 +372,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * TX_PWR_CFG_3:
-@@ -1121,6 +1149,15 @@
+@@ -1121,6 +1151,15 @@
  #define TX_PWR_CFG_3_UKNOWN2		FIELD32(0x00f00000)
  #define TX_PWR_CFG_3_UKNOWN3		FIELD32(0x0f000000)
  #define TX_PWR_CFG_3_UKNOWN4		FIELD32(0xf0000000)
@@ -324,7 +388,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * TX_PWR_CFG_4:
-@@ -1130,6 +1167,11 @@
+@@ -1130,6 +1169,11 @@
  #define TX_PWR_CFG_4_UKNOWN6		FIELD32(0x000000f0)
  #define TX_PWR_CFG_4_UKNOWN7		FIELD32(0x00000f00)
  #define TX_PWR_CFG_4_UKNOWN8		FIELD32(0x0000f000)
@@ -336,7 +400,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * TX_PIN_CFG:
-@@ -1451,6 +1493,81 @@
+@@ -1451,6 +1495,81 @@
   */
  #define EXP_ACK_TIME			0x1380
  
@@ -418,7 +482,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * RX_FILTER_CFG: RX configuration register.
   */
-@@ -1902,11 +2019,13 @@ struct mac_iveiv_entry {
+@@ -1902,11 +2021,13 @@ struct mac_iveiv_entry {
  #define HW_BEACON_BASE6			0x5dc0
  #define HW_BEACON_BASE7			0x5bc0
  
@@ -433,7 +497,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * BBP registers.
   * The wordsize of the BBP is 8 bits.
-@@ -1975,6 +2094,10 @@ struct mac_iveiv_entry {
+@@ -1975,6 +2096,10 @@ struct mac_iveiv_entry {
  #define BBP109_TX0_POWER		FIELD8(0x0f)
  #define BBP109_TX1_POWER		FIELD8(0xf0)
  
@@ -444,7 +508,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * BBP 138: Unknown
   */
-@@ -2024,6 +2147,12 @@ struct mac_iveiv_entry {
+@@ -2024,6 +2149,12 @@ struct mac_iveiv_entry {
  #define RFCSR3_PA2_CASCODE_BIAS_CCKK	FIELD8(0x80)
  /* Bits for RF3290/RF5360/RF5370/RF5372/RF5390/RF5392 */
  #define RFCSR3_VCOCAL_EN		FIELD8(0x80)
@@ -457,7 +521,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * FRCSR 5:
-@@ -2036,6 +2165,8 @@ struct mac_iveiv_entry {
+@@ -2036,6 +2167,8 @@ struct mac_iveiv_entry {
  #define RFCSR6_R1			FIELD8(0x03)
  #define RFCSR6_R2			FIELD8(0x40)
  #define RFCSR6_TXDIV		FIELD8(0x0c)
@@ -466,7 +530,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * RFCSR 7:
-@@ -2060,7 +2191,12 @@ struct mac_iveiv_entry {
+@@ -2060,7 +2193,12 @@ struct mac_iveiv_entry {
   * RFCSR 11:
   */
  #define RFCSR11_R			FIELD8(0x03)
@@ -479,7 +543,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * RFCSR 12:
-@@ -2092,6 +2228,10 @@ struct mac_iveiv_entry {
+@@ -2092,6 +2230,10 @@ struct mac_iveiv_entry {
  #define RFCSR17_R			FIELD8(0x20)
  #define RFCSR17_CODE                   FIELD8(0x7f)
  
@@ -490,7 +554,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * RFCSR 20:
   */
-@@ -2152,6 +2292,12 @@ struct mac_iveiv_entry {
+@@ -2152,6 +2294,12 @@ struct mac_iveiv_entry {
  #define RFCSR31_RX_H20M			FIELD8(0x20)
  #define RFCSR31_RX_CALIB		FIELD8(0x7f)
  
@@ -503,7 +567,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * RFCSR 38:
   */
-@@ -2160,6 +2306,7 @@ struct mac_iveiv_entry {
+@@ -2160,6 +2308,7 @@ struct mac_iveiv_entry {
  /*
   * RFCSR 39:
   */
@@ -511,7 +575,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define RFCSR39_RX_LO2_EN		FIELD8(0x80)
  
  /*
-@@ -2167,12 +2314,36 @@ struct mac_iveiv_entry {
+@@ -2167,12 +2316,36 @@ struct mac_iveiv_entry {
   */
  #define RFCSR49_TX			FIELD8(0x3f)
  #define RFCSR49_EP			FIELD8(0xc0)
@@ -548,7 +612,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  /*
   * RF registers
-@@ -2206,28 +2377,67 @@ struct mac_iveiv_entry {
+@@ -2206,28 +2379,67 @@ struct mac_iveiv_entry {
   * The wordsize of the EEPROM is 16 bits.
   */
  
@@ -624,7 +688,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_MAC_ADDR_BYTE4		FIELD16(0x00ff)
  #define EEPROM_MAC_ADDR_BYTE5		FIELD16(0xff00)
  
-@@ -2237,7 +2447,6 @@ struct mac_iveiv_entry {
+@@ -2237,7 +2449,6 @@ struct mac_iveiv_entry {
   * TXPATH: 1: 1T, 2: 2T, 3: 3T
   * RF_TYPE: RFIC type
   */
@@ -632,7 +696,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_NIC_CONF0_RXPATH		FIELD16(0x000f)
  #define EEPROM_NIC_CONF0_TXPATH		FIELD16(0x00f0)
  #define EEPROM_NIC_CONF0_RF_TYPE		FIELD16(0x0f00)
-@@ -2261,7 +2470,6 @@ struct mac_iveiv_entry {
+@@ -2261,7 +2472,6 @@ struct mac_iveiv_entry {
   * BT_COEXIST: 0: disable, 1: enable
   * DAC_TEST: 0: disable, 1: enable
   */
@@ -640,7 +704,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_NIC_CONF1_HW_RADIO		FIELD16(0x0001)
  #define EEPROM_NIC_CONF1_EXTERNAL_TX_ALC		FIELD16(0x0002)
  #define EEPROM_NIC_CONF1_EXTERNAL_LNA_2G		FIELD16(0x0004)
-@@ -2281,7 +2489,6 @@ struct mac_iveiv_entry {
+@@ -2281,7 +2491,6 @@ struct mac_iveiv_entry {
  /*
   * EEPROM frequency
   */
@@ -648,7 +712,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_FREQ_OFFSET		FIELD16(0x00ff)
  #define EEPROM_FREQ_LED_MODE		FIELD16(0x7f00)
  #define EEPROM_FREQ_LED_POLARITY	FIELD16(0x1000)
-@@ -2298,9 +2505,6 @@ struct mac_iveiv_entry {
+@@ -2298,9 +2507,6 @@ struct mac_iveiv_entry {
   * POLARITY_GPIO_4: Polarity GPIO4 setting.
   * LED_MODE: Led mode.
   */
@@ -658,7 +722,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_LED_POLARITY_RDY_BG	FIELD16(0x0001)
  #define EEPROM_LED_POLARITY_RDY_A	FIELD16(0x0002)
  #define EEPROM_LED_POLARITY_ACT		FIELD16(0x0004)
-@@ -2317,7 +2521,6 @@ struct mac_iveiv_entry {
+@@ -2317,7 +2523,6 @@ struct mac_iveiv_entry {
   * TX_STREAM: 0: Reserved, 1: 1 Stream, 2: 2 Stream
   * CRYSTAL: 00: Reserved, 01: One crystal, 10: Two crystal, 11: Reserved
   */
@@ -666,7 +730,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_NIC_CONF2_RX_STREAM		FIELD16(0x000f)
  #define EEPROM_NIC_CONF2_TX_STREAM		FIELD16(0x00f0)
  #define EEPROM_NIC_CONF2_CRYSTAL		FIELD16(0x0600)
-@@ -2325,54 +2528,46 @@ struct mac_iveiv_entry {
+@@ -2325,54 +2530,46 @@ struct mac_iveiv_entry {
  /*
   * EEPROM LNA
   */
@@ -721,7 +785,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_EIRP_MAX_TX_POWER_2GHZ	FIELD16(0x00ff)
  #define EEPROM_EIRP_MAX_TX_POWER_5GHZ	FIELD16(0xff00)
  
-@@ -2383,7 +2578,6 @@ struct mac_iveiv_entry {
+@@ -2383,7 +2580,6 @@ struct mac_iveiv_entry {
   * TYPE: 1: Plus the delta value, 0: minus the delta value
   * ENABLE: enable tx power compensation for 40BW
   */
@@ -729,7 +793,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TXPOWER_DELTA_VALUE_2G	FIELD16(0x003f)
  #define EEPROM_TXPOWER_DELTA_TYPE_2G	FIELD16(0x0040)
  #define EEPROM_TXPOWER_DELTA_ENABLE_2G	FIELD16(0x0080)
-@@ -2394,8 +2588,6 @@ struct mac_iveiv_entry {
+@@ -2394,8 +2590,6 @@ struct mac_iveiv_entry {
  /*
   * EEPROM TXPOWER 802.11BG
   */
@@ -738,7 +802,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TXPOWER_BG_SIZE		7
  #define EEPROM_TXPOWER_BG_1		FIELD16(0x00ff)
  #define EEPROM_TXPOWER_BG_2		FIELD16(0xff00)
-@@ -2407,7 +2599,6 @@ struct mac_iveiv_entry {
+@@ -2407,7 +2601,6 @@ struct mac_iveiv_entry {
   * MINUS3: If the actual TSSI is below this boundary, tx power needs to be
   *         reduced by (agc_step * -3)
   */
@@ -746,7 +810,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_BG1_MINUS4	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_BG1_MINUS3	FIELD16(0xff00)
  
-@@ -2418,7 +2609,6 @@ struct mac_iveiv_entry {
+@@ -2418,7 +2611,6 @@ struct mac_iveiv_entry {
   * MINUS1: If the actual TSSI is below this boundary, tx power needs to be
   *         reduced by (agc_step * -1)
   */
@@ -754,7 +818,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_BG2_MINUS2	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_BG2_MINUS1	FIELD16(0xff00)
  
-@@ -2428,7 +2618,6 @@ struct mac_iveiv_entry {
+@@ -2428,7 +2620,6 @@ struct mac_iveiv_entry {
   * PLUS1: If the actual TSSI is above this boundary, tx power needs to be
   *        increased by (agc_step * 1)
   */
@@ -762,7 +826,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_BG3_REF	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_BG3_PLUS1	FIELD16(0xff00)
  
-@@ -2439,7 +2628,6 @@ struct mac_iveiv_entry {
+@@ -2439,7 +2630,6 @@ struct mac_iveiv_entry {
   * PLUS3: If the actual TSSI is above this boundary, tx power needs to be
   *        increased by (agc_step * 3)
   */
@@ -770,7 +834,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_BG4_PLUS2	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_BG4_PLUS3	FIELD16(0xff00)
  
-@@ -2449,19 +2637,20 @@ struct mac_iveiv_entry {
+@@ -2449,19 +2639,20 @@ struct mac_iveiv_entry {
   *        increased by (agc_step * 4)
   * AGC_STEP: Temperature compensation step.
   */
@@ -794,7 +858,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * EEPROM temperature compensation boundaries 802.11A
   * MINUS4: If the actual TSSI is below this boundary, tx power needs to be
-@@ -2469,7 +2658,6 @@ struct mac_iveiv_entry {
+@@ -2469,7 +2660,6 @@ struct mac_iveiv_entry {
   * MINUS3: If the actual TSSI is below this boundary, tx power needs to be
   *         reduced by (agc_step * -3)
   */
@@ -802,7 +866,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_A1_MINUS4	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_A1_MINUS3	FIELD16(0xff00)
  
-@@ -2480,7 +2668,6 @@ struct mac_iveiv_entry {
+@@ -2480,7 +2670,6 @@ struct mac_iveiv_entry {
   * MINUS1: If the actual TSSI is below this boundary, tx power needs to be
   *         reduced by (agc_step * -1)
   */
@@ -810,7 +874,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_A2_MINUS2	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_A2_MINUS1	FIELD16(0xff00)
  
-@@ -2490,7 +2677,6 @@ struct mac_iveiv_entry {
+@@ -2490,7 +2679,6 @@ struct mac_iveiv_entry {
   * PLUS1: If the actual TSSI is above this boundary, tx power needs to be
   *        increased by (agc_step * 1)
   */
@@ -818,7 +882,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_A3_REF	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_A3_PLUS1	FIELD16(0xff00)
  
-@@ -2501,7 +2687,6 @@ struct mac_iveiv_entry {
+@@ -2501,7 +2689,6 @@ struct mac_iveiv_entry {
   * PLUS3: If the actual TSSI is above this boundary, tx power needs to be
   *        increased by (agc_step * 3)
   */
@@ -826,7 +890,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TSSI_BOUND_A4_PLUS2	FIELD16(0x00ff)
  #define EEPROM_TSSI_BOUND_A4_PLUS3	FIELD16(0xff00)
  
-@@ -2511,14 +2696,12 @@ struct mac_iveiv_entry {
+@@ -2511,14 +2698,12 @@ struct mac_iveiv_entry {
   *        increased by (agc_step * 4)
   * AGC_STEP: Temperature compensation step.
   */
@@ -841,7 +905,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define EEPROM_TXPOWER_BYRATE_SIZE	9
  
  #define EEPROM_TXPOWER_BYRATE_RATE0	FIELD16(0x000f)
-@@ -2529,11 +2712,14 @@ struct mac_iveiv_entry {
+@@ -2529,11 +2714,14 @@ struct mac_iveiv_entry {
  /*
   * EEPROM BBP.
   */
@@ -857,7 +921,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * EEPROM IQ Calibration, unlike other entries those are byte addresses.
   */
-@@ -2610,6 +2796,7 @@ struct mac_iveiv_entry {
+@@ -2610,6 +2798,7 @@ struct mac_iveiv_entry {
  #define MCU_RADAR			0x60
  #define MCU_BOOT_SIGNAL			0x72
  #define MCU_ANT_SELECT			0X73
@@ -865,7 +929,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define MCU_BBP_SIGNAL			0x80
  #define MCU_POWER_SAVE			0x83
  #define MCU_BAND_SELECT		0x91
-@@ -2630,6 +2817,7 @@ struct mac_iveiv_entry {
+@@ -2630,6 +2819,7 @@ struct mac_iveiv_entry {
  #define TXWI_DESC_SIZE_5WORDS		(5 * sizeof(__le32))
  
  #define RXWI_DESC_SIZE_4WORDS		(4 * sizeof(__le32))
@@ -873,7 +937,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  #define RXWI_DESC_SIZE_6WORDS		(6 * sizeof(__le32))
  
  /*
-@@ -2750,18 +2938,15 @@ struct mac_iveiv_entry {
+@@ -2750,18 +2940,15 @@ struct mac_iveiv_entry {
  #define MAX_A_TXPOWER	15
  #define DEFAULT_TXPOWER	5
  
@@ -1654,7 +1718,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	switch (rt2x00dev->chip.rf) {
  	case RF2020:
-@@ -2591,6 +3143,9 @@ static void rt2800_config_channel(struct
+@@ -2591,12 +3143,16 @@ static void rt2800_config_channel(struct
  	case RF3052:
  		rt2800_config_channel_rf3052(rt2x00dev, conf, rf, info);
  		break;
@@ -1664,7 +1728,24 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	case RF3290:
  		rt2800_config_channel_rf3290(rt2x00dev, conf, rf, info);
  		break;
-@@ -2636,6 +3191,23 @@ static void rt2800_config_channel(struct
+ 	case RF3322:
+ 		rt2800_config_channel_rf3322(rt2x00dev, conf, rf, info);
+ 		break;
++	case RF3070:
+ 	case RF5360:
+ 	case RF5370:
+ 	case RF5372:
+@@ -2611,7 +3167,8 @@ static void rt2800_config_channel(struct
+ 		rt2800_config_channel_rf2xxx(rt2x00dev, conf, rf, info);
+ 	}
+ 
+-	if (rt2x00_rf(rt2x00dev, RF3290) ||
++	if (rt2x00_rf(rt2x00dev, RF3070) ||
++	    rt2x00_rf(rt2x00dev, RF3290) ||
+ 	    rt2x00_rf(rt2x00dev, RF3322) ||
+ 	    rt2x00_rf(rt2x00dev, RF5360) ||
+ 	    rt2x00_rf(rt2x00dev, RF5370) ||
+@@ -2636,6 +3193,23 @@ static void rt2800_config_channel(struct
  		rt2800_bbp_write(rt2x00dev, 66, 0x26 + rt2x00dev->lna_gain);
  		rt2800_bbp_write(rt2x00dev, 27, 0x20);
  		rt2800_bbp_write(rt2x00dev, 66, 0x26 + rt2x00dev->lna_gain);
@@ -1688,7 +1769,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	} else {
  		rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
  		rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
-@@ -2651,16 +3223,27 @@ static void rt2800_config_channel(struct
+@@ -2651,16 +3225,27 @@ static void rt2800_config_channel(struct
  				rt2800_bbp_write(rt2x00dev, 82, 0x62);
  				rt2800_bbp_write(rt2x00dev, 75, 0x46);
  			} else {
@@ -1717,33 +1798,41 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		if (test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags))
  			rt2800_bbp_write(rt2x00dev, 75, 0x46);
  		else
-@@ -2731,6 +3314,41 @@ static void rt2800_config_channel(struct
+@@ -2731,6 +3316,49 @@ static void rt2800_config_channel(struct
  	if (rt2x00_rt(rt2x00dev, RT3572))
  		rt2800_rfcsr_write(rt2x00dev, 8, 0x80);
  
 +	if (rt2x00_rt(rt2x00dev, RT3593)) {
-+		if (rt2x00_is_usb(rt2x00dev)) {
-+			rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
++		rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
 +
-+			/* Band selection. GPIO #8 controls all paths */
++		/* Band selection */
++		if (rt2x00_is_usb(rt2x00dev) ||
++		    rt2x00_is_pcie(rt2x00dev)) {
++			/* GPIO #8 controls all paths */
 +			rt2x00_set_field32(&reg, GPIO_CTRL_DIR8, 0);
 +			if (rf->channel <= 14)
 +				rt2x00_set_field32(&reg, GPIO_CTRL_VAL8, 1);
 +			else
 +				rt2x00_set_field32(&reg, GPIO_CTRL_VAL8, 0);
++		}
 +
++		/* LNA PE control. */
++		if (rt2x00_is_usb(rt2x00dev)) {
++			/* GPIO #4 controls PE0 and PE1,
++			 * GPIO #7 controls PE2
++			 */
 +			rt2x00_set_field32(&reg, GPIO_CTRL_DIR4, 0);
 +			rt2x00_set_field32(&reg, GPIO_CTRL_DIR7, 0);
 +
-+			/* LNA PE control.
-+			* GPIO #4 controls PE0 and PE1,
-+			* GPIO #7 controls PE2
-+			*/
 +			rt2x00_set_field32(&reg, GPIO_CTRL_VAL4, 1);
 +			rt2x00_set_field32(&reg, GPIO_CTRL_VAL7, 1);
-+
-+			rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
++		} else if (rt2x00_is_pcie(rt2x00dev)) {
++			/* GPIO #4 controls PE0, PE1 and PE2 */
++			rt2x00_set_field32(&reg, GPIO_CTRL_DIR4, 0);
++			rt2x00_set_field32(&reg, GPIO_CTRL_VAL4, 1);
 +		}
++
++		rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
 +
 +		/* AGC init */
 +		if (rf->channel <= 14)
@@ -1759,7 +1848,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	if (rt2x00_rt(rt2x00dev, RT5592)) {
  		rt2800_bbp_write(rt2x00dev, 195, 141);
  		rt2800_bbp_write(rt2x00dev, 196, conf_is_ht40(conf) ? 0x10 : 0x1a);
-@@ -2790,6 +3408,13 @@ static int rt2800_get_gain_calibration_d
+@@ -2790,6 +3418,13 @@ static int rt2800_get_gain_calibration_d
  	int i;
  
  	/*
@@ -1773,7 +1862,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	 * Read TSSI boundaries for temperature compensation from
  	 * the EEPROM.
  	 *
-@@ -2798,62 +3423,62 @@ static int rt2800_get_gain_calibration_d
+@@ -2798,62 +3433,62 @@ static int rt2800_get_gain_calibration_d
  	 * Example TSSI bounds  0xF0 0xD0 0xB5 0xA0 0x88 0x45 0x25 0x15 0x00
  	 */
  	if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ) {
@@ -1846,7 +1935,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		tssi_bounds[8] = rt2x00_get_field16(eeprom,
  					EEPROM_TSSI_BOUND_A5_PLUS4);
  
-@@ -2899,7 +3524,7 @@ static int rt2800_get_txpower_bw_comp(st
+@@ -2899,7 +3534,7 @@ static int rt2800_get_txpower_bw_comp(st
  	u8 comp_type;
  	int comp_value = 0;
  
@@ -1855,7 +1944,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	/*
  	 * HT40 compensation not required.
-@@ -2966,6 +3591,9 @@ static u8 rt2800_compensate_txpower(stru
+@@ -2966,6 +3601,9 @@ static u8 rt2800_compensate_txpower(stru
  	u8 eirp_txpower_criterion;
  	u8 reg_limit;
  
@@ -1865,7 +1954,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	if (test_bit(CAPABILITY_POWER_LIMIT, &rt2x00dev->cap_flags)) {
  		/*
  		 * Check if eirp txpower exceed txpower_limit.
-@@ -2974,12 +3602,12 @@ static u8 rt2800_compensate_txpower(stru
+@@ -2974,12 +3612,12 @@ static u8 rt2800_compensate_txpower(stru
  		 * .11b data rate need add additional 4dbm
  		 * when calculating eirp txpower.
  		 */
@@ -1881,7 +1970,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  				   &eeprom);
  
  		if (band == IEEE80211_BAND_2GHZ)
-@@ -3001,6 +3629,412 @@ static u8 rt2800_compensate_txpower(stru
+@@ -3001,6 +3639,412 @@ static u8 rt2800_compensate_txpower(stru
  	return min_t(u8, txpower, 0xc);
  }
  
@@ -2294,7 +2383,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  /*
   * We configure transmit power using MAC TX_PWR_CFG_{0,...,N} registers and
   * BBP R1 register. TX_PWR_CFG_X allow to configure per rate TX power values,
-@@ -3010,9 +4044,9 @@ static u8 rt2800_compensate_txpower(stru
+@@ -3010,9 +4054,9 @@ static u8 rt2800_compensate_txpower(stru
   * EEPROM_TXPOWER_BYRATE offset. We adjust them and BBP R1 settings according to
   * current conditions (i.e. band, bandwidth, temperature, user settings).
   */
@@ -2307,7 +2396,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  {
  	u8 txpower, r1;
  	u16 eeprom;
-@@ -3080,8 +4114,8 @@ static void rt2800_config_txpower(struct
+@@ -3080,8 +4124,8 @@ static void rt2800_config_txpower(struct
  		rt2800_register_read(rt2x00dev, offset, &reg);
  
  		/* read the next four txpower values */
@@ -2318,7 +2407,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  		is_rate_b = i ? 0 : 1;
  		/*
-@@ -3129,8 +4163,8 @@ static void rt2800_config_txpower(struct
+@@ -3129,8 +4173,8 @@ static void rt2800_config_txpower(struct
  		rt2x00_set_field32(&reg, TX_PWR_CFG_RATE3, txpower);
  
  		/* read the next four txpower values */
@@ -2329,7 +2418,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  		is_rate_b = 0;
  		/*
-@@ -3184,6 +4218,16 @@ static void rt2800_config_txpower(struct
+@@ -3184,6 +4228,16 @@ static void rt2800_config_txpower(struct
  	}
  }
  
@@ -2346,15 +2435,16 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  void rt2800_gain_calibration(struct rt2x00_dev *rt2x00dev)
  {
  	rt2800_config_txpower(rt2x00dev, rt2x00dev->hw->conf.chandef.chan,
-@@ -3219,6 +4263,7 @@ void rt2800_vco_calibration(struct rt2x0
+@@ -3219,6 +4273,8 @@ void rt2800_vco_calibration(struct rt2x0
  		rt2x00_set_field8(&rfcsr, RFCSR7_RF_TUNING, 1);
  		rt2800_rfcsr_write(rt2x00dev, 7, rfcsr);
  		break;
 +	case RF3053:
++	case RF3070:
  	case RF3290:
  	case RF5360:
  	case RF5370:
-@@ -3442,17 +4487,25 @@ static int rt2800_init_registers(struct 
+@@ -3442,17 +4498,25 @@ static int rt2800_init_registers(struct
  		return ret;
  
  	rt2800_register_read(rt2x00dev, BCN_OFFSET0, &reg);
@@ -2388,7 +2478,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	rt2800_register_write(rt2x00dev, BCN_OFFSET1, reg);
  
  	rt2800_register_write(rt2x00dev, LEGACY_BASIC_RATE, 0x0000013f);
-@@ -3528,7 +4581,8 @@ static int rt2800_init_registers(struct 
+@@ -3528,7 +4592,8 @@ static int rt2800_init_registers(struct
  		if (rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
  		    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E) ||
  		    rt2x00_rt_rev_lt(rt2x00dev, RT3390, REV_RT3390E)) {
@@ -2398,7 +2488,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  			if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_DAC_TEST))
  				rt2800_register_write(rt2x00dev, TX_SW_CFG2,
  						      0x0000002c);
-@@ -3559,6 +4613,23 @@ static int rt2800_init_registers(struct 
+@@ -3559,6 +4624,23 @@ static int rt2800_init_registers(struct
  	} else if (rt2x00_rt(rt2x00dev, RT3572)) {
  		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000400);
  		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00080606);
@@ -2422,7 +2512,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	} else if (rt2x00_rt(rt2x00dev, RT5390) ||
  		   rt2x00_rt(rt2x00dev, RT5392) ||
  		   rt2x00_rt(rt2x00dev, RT5592)) {
-@@ -3786,14 +4857,8 @@ static int rt2800_init_registers(struct 
+@@ -3786,14 +4868,8 @@ static int rt2800_init_registers(struct
  	/*
  	 * Clear all beacons
  	 */
@@ -2439,7 +2529,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	if (rt2x00_is_usb(rt2x00dev)) {
  		rt2800_register_read(rt2x00dev, US_CYC_CNT, &reg);
-@@ -3989,7 +5054,7 @@ static void rt2800_disable_unused_dac_ad
+@@ -3989,7 +5065,7 @@ static void rt2800_disable_unused_dac_ad
  	u8 value;
  
  	rt2800_bbp_read(rt2x00dev, 138, &value);
@@ -2448,7 +2538,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
  		value |= 0x20;
  	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
-@@ -4332,6 +5397,22 @@ static void rt2800_init_bbp_3572(struct 
+@@ -4332,6 +5408,22 @@ static void rt2800_init_bbp_3572(struct
  	rt2800_disable_unused_dac_adc(rt2x00dev);
  }
  
@@ -2471,7 +2561,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  static void rt2800_init_bbp_53xx(struct rt2x00_dev *rt2x00dev)
  {
  	int ant, div_mode;
-@@ -4402,7 +5483,7 @@ static void rt2800_init_bbp_53xx(struct 
+@@ -4402,7 +5494,7 @@ static void rt2800_init_bbp_53xx(struct
  
  	rt2800_disable_unused_dac_adc(rt2x00dev);
  
@@ -2480,7 +2570,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	div_mode = rt2x00_get_field16(eeprom,
  				      EEPROM_NIC_CONF1_ANT_DIVERSITY);
  	ant = (div_mode == 3) ? 1 : 0;
-@@ -4488,7 +5569,7 @@ static void rt2800_init_bbp_5592(struct 
+@@ -4488,7 +5580,7 @@ static void rt2800_init_bbp_5592(struct
  
  	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
  
@@ -2489,7 +2579,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	div_mode = rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_ANT_DIVERSITY);
  	ant = (div_mode == 3) ? 1 : 0;
  	rt2800_bbp_read(rt2x00dev, 152, &value);
-@@ -4547,6 +5628,9 @@ static void rt2800_init_bbp(struct rt2x0
+@@ -4547,6 +5639,9 @@ static void rt2800_init_bbp(struct rt2x0
  	case RT3572:
  		rt2800_init_bbp_3572(rt2x00dev);
  		break;
@@ -2499,7 +2589,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	case RT5390:
  	case RT5392:
  		rt2800_init_bbp_53xx(rt2x00dev);
-@@ -4557,7 +5641,8 @@ static void rt2800_init_bbp(struct rt2x0
+@@ -4557,7 +5652,8 @@ static void rt2800_init_bbp(struct rt2x0
  	}
  
  	for (i = 0; i < EEPROM_BBP_SIZE; i++) {
@@ -2509,7 +2599,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  		if (eeprom != 0xffff && eeprom != 0x0000) {
  			reg_id = rt2x00_get_field16(eeprom, EEPROM_BBP_REG_ID);
-@@ -4728,7 +5813,7 @@ static void rt2800_normal_mode_setup_3xx
+@@ -4728,7 +5824,7 @@ static void rt2800_normal_mode_setup_3xx
  	if (rt2x00_rt(rt2x00dev, RT3090)) {
  		/*  Turn off unused DAC1 and ADC1 to reduce power consumption */
  		rt2800_bbp_read(rt2x00dev, 138, &bbp);
@@ -2518,7 +2608,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
  			rt2x00_set_field8(&bbp, BBP138_RX_ADC1, 0);
  		if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
-@@ -4771,6 +5856,42 @@ static void rt2800_normal_mode_setup_3xx
+@@ -4771,6 +5867,42 @@ static void rt2800_normal_mode_setup_3xx
  	}
  }
  
@@ -2561,7 +2651,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  static void rt2800_normal_mode_setup_5xxx(struct rt2x00_dev *rt2x00dev)
  {
  	u8 reg;
-@@ -4778,7 +5899,7 @@ static void rt2800_normal_mode_setup_5xx
+@@ -4778,7 +5910,7 @@ static void rt2800_normal_mode_setup_5xx
  
  	/*  Turn off unused DAC1 and ADC1 to reduce power consumption */
  	rt2800_bbp_read(rt2x00dev, 138, &reg);
@@ -2570,7 +2660,16 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
  		rt2x00_set_field8(&reg, BBP138_RX_ADC1, 0);
  	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
-@@ -4884,7 +6005,8 @@ static void rt2800_init_rfcsr_30xx(struc
+@@ -4864,7 +5996,7 @@ static void rt2800_init_rfcsr_30xx(struc
+ 	rt2800_rfcsr_write(rt2x00dev, 20, 0xba);
+ 	rt2800_rfcsr_write(rt2x00dev, 21, 0xdb);
+ 	rt2800_rfcsr_write(rt2x00dev, 24, 0x16);
+-	rt2800_rfcsr_write(rt2x00dev, 25, 0x01);
++	rt2800_rfcsr_write(rt2x00dev, 25, 0x03);
+ 	rt2800_rfcsr_write(rt2x00dev, 29, 0x1f);
+ 
+ 	if (rt2x00_rt_rev_lt(rt2x00dev, RT3070, REV_RT3070F)) {
+@@ -4884,7 +6016,8 @@ static void rt2800_init_rfcsr_30xx(struc
  		rt2x00_set_field32(&reg, LDO_CFG0_BGSEL, 1);
  		if (rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
  		    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E)) {
@@ -2580,7 +2679,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  			if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_DAC_TEST))
  				rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 3);
  			else
-@@ -5152,6 +6274,136 @@ static void rt2800_init_rfcsr_3572(struc
+@@ -5152,6 +6285,136 @@ static void rt2800_init_rfcsr_3572(struc
  	rt2800_normal_mode_setup_3xxx(rt2x00dev);
  }
  
@@ -2717,7 +2816,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  static void rt2800_init_rfcsr_5390(struct rt2x00_dev *rt2x00dev)
  {
  	rt2800_rf_init_calibration(rt2x00dev, 2);
-@@ -5380,6 +6632,9 @@ static void rt2800_init_rfcsr(struct rt2
+@@ -5380,6 +6643,9 @@ static void rt2800_init_rfcsr(struct rt2
  	case RT3572:
  		rt2800_init_rfcsr_3572(rt2x00dev);
  		break;
@@ -2727,15 +2826,26 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	case RT5390:
  		rt2800_init_rfcsr_5390(rt2x00dev);
  		break;
-@@ -5404,19 +6659,20 @@ int rt2800_enable_radio(struct rt2x00_de
+@@ -5398,27 +6664,37 @@ int rt2800_enable_radio(struct rt2x00_de
+ 	u16 word;
+ 
+ 	/*
+-	 * Initialize all registers.
++	 * Initialize MAC registers.
+ 	 */
+ 	if (unlikely(rt2800_wait_wpdma_ready(rt2x00dev) ||
  		     rt2800_init_registers(rt2x00dev)))
  		return -EIO;
  
+ 	/*
+-	 * Send signal to firmware during boot time.
++	 * Wait BBP/RF to wake up.
++	 */
 +	if (unlikely(rt2800_wait_bbp_rf_ready(rt2x00dev)))
 +		return -EIO;
 +
- 	/*
- 	 * Send signal to firmware during boot time.
++	/*
++	 * Send signal during boot time to initialize firmware.
  	 */
  	rt2800_register_write(rt2x00dev, H2M_BBP_AGENT, 0);
  	rt2800_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
@@ -2749,11 +2859,19 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
 -	if (unlikely(rt2800_wait_bbp_rf_ready(rt2x00dev) ||
 -		     rt2800_wait_bbp_ready(rt2x00dev)))
++	/*
++	 * Make sure BBP is up and running.
++	 */
 +	if (unlikely(rt2800_wait_bbp_ready(rt2x00dev)))
  		return -EIO;
  
++	/*
++	 * Initialize BBP/RF registers.
++	 */
  	rt2800_init_bbp(rt2x00dev);
-@@ -5456,15 +6712,15 @@ int rt2800_enable_radio(struct rt2x00_de
+ 	rt2800_init_rfcsr(rt2x00dev);
+ 
+@@ -5456,15 +6732,15 @@ int rt2800_enable_radio(struct rt2x00_de
  	/*
  	 * Initialize LED control
  	 */
@@ -2772,7 +2890,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	rt2800_mcu_request(rt2x00dev, MCU_LED_LED_POLARITY, 0xff,
  			   word & 0xff, (word >> 8) & 0xff);
  
-@@ -5560,6 +6816,34 @@ int rt2800_read_eeprom_efuse(struct rt2x
+@@ -5560,6 +6836,34 @@ int rt2800_read_eeprom_efuse(struct rt2x
  }
  EXPORT_SYMBOL_GPL(rt2800_read_eeprom_efuse);
  
@@ -2807,7 +2925,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  static int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
  {
  	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
-@@ -5578,18 +6862,18 @@ static int rt2800_validate_eeprom(struct
+@@ -5578,18 +6882,18 @@ static int rt2800_validate_eeprom(struct
  	/*
  	 * Start validation of the data that has been read.
  	 */
@@ -2829,7 +2947,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		rt2x00_eeprom_dbg(rt2x00dev, "Antenna: 0x%04x\n", word);
  	} else if (rt2x00_rt(rt2x00dev, RT2860) ||
  		   rt2x00_rt(rt2x00dev, RT2872)) {
-@@ -5598,10 +6882,10 @@ static int rt2800_validate_eeprom(struct
+@@ -5598,10 +6902,10 @@ static int rt2800_validate_eeprom(struct
  		 */
  		if (rt2x00_get_field16(word, EEPROM_NIC_CONF0_RXPATH) > 2)
  			rt2x00_set_field16(&word, EEPROM_NIC_CONF0_RXPATH, 2);
@@ -2842,7 +2960,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	if (word == 0xffff) {
  		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_HW_RADIO, 0);
  		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_EXTERNAL_TX_ALC, 0);
-@@ -5618,24 +6902,24 @@ static int rt2800_validate_eeprom(struct
+@@ -5618,24 +6922,24 @@ static int rt2800_validate_eeprom(struct
  		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_INTERNAL_TX_ALC, 0);
  		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_BT_COEXIST, 0);
  		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_DAC_TEST, 0);
@@ -2874,7 +2992,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		rt2x00_eeprom_dbg(rt2x00dev, "Led Mode: 0x%04x\n", word);
  	}
  
-@@ -5644,56 +6928,61 @@ static int rt2800_validate_eeprom(struct
+@@ -5644,56 +6948,61 @@ static int rt2800_validate_eeprom(struct
  	 * lna0 as correct value. Note that EEPROM_LNA
  	 * is never validated.
  	 */
@@ -2923,10 +3041,10 @@ Contains the following changes from wireless-testing/master-2013-08-26:
 +					   default_lna_gain);
  	}
 +	rt2800_eeprom_write(rt2x00dev, EEPROM_RSSI_BG2, word);
-+
-+	drv_data->txmixer_gain_5g = rt2800_get_txmixer_gain_5g(rt2x00dev);
  
 -	rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_A, &word);
++	drv_data->txmixer_gain_5g = rt2800_get_txmixer_gain_5g(rt2x00dev);
++
 +	rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A, &word);
  	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_A_OFFSET0)) > 10)
  		rt2x00_set_field16(&word, EEPROM_RSSI_A_OFFSET0, 0);
@@ -2967,7 +3085,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	return 0;
  }
-@@ -5707,7 +6996,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5707,7 +7016,7 @@ static int rt2800_init_eeprom(struct rt2
  	/*
  	 * Read EEPROM word for configuration.
  	 */
@@ -2976,7 +3094,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	/*
  	 * Identify RF chipset by EEPROM value
-@@ -5717,7 +7006,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5717,7 +7026,7 @@ static int rt2800_init_eeprom(struct rt2
  	if (rt2x00_rt(rt2x00dev, RT3290) ||
  	    rt2x00_rt(rt2x00dev, RT5390) ||
  	    rt2x00_rt(rt2x00dev, RT5392))
@@ -2985,15 +3103,16 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	else
  		rf = rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RF_TYPE);
  
-@@ -5731,6 +7020,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5731,6 +7040,8 @@ static int rt2800_init_eeprom(struct rt2
  	case RF3021:
  	case RF3022:
  	case RF3052:
 +	case RF3053:
++	case RF3070:
  	case RF3290:
  	case RF3320:
  	case RF3322:
-@@ -5757,7 +7047,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5757,7 +7068,7 @@ static int rt2800_init_eeprom(struct rt2
  	rt2x00dev->default_ant.rx_chain_num =
  	    rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH);
  
@@ -3002,7 +3121,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	if (rt2x00_rt(rt2x00dev, RT3070) ||
  	    rt2x00_rt(rt2x00dev, RT3090) ||
-@@ -5810,7 +7100,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5810,7 +7121,7 @@ static int rt2800_init_eeprom(struct rt2
  	/*
  	 * Read frequency offset and RF programming sequence.
  	 */
@@ -3011,7 +3130,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	rt2x00dev->freq_offset = rt2x00_get_field16(eeprom, EEPROM_FREQ_OFFSET);
  
  	/*
-@@ -5827,7 +7117,7 @@ static int rt2800_init_eeprom(struct rt2
+@@ -5827,7 +7138,7 @@ static int rt2800_init_eeprom(struct rt2
  	/*
  	 * Check if support EIRP tx power limit feature.
  	 */
@@ -3020,7 +3139,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	if (rt2x00_get_field16(eeprom, EEPROM_EIRP_MAX_TX_POWER_2GHZ) <
  					EIRP_MAX_TX_POWER_LIMIT)
-@@ -6109,12 +7399,79 @@ static const struct rf_channel rf_vals_5
+@@ -6109,12 +7420,79 @@ static const struct rf_channel rf_vals_5
  	{196, 83, 0, 12, 1},
  };
  
@@ -3100,7 +3219,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	unsigned int i;
  	u16 eeprom;
  	u32 reg;
-@@ -6149,7 +7506,7 @@ static int rt2800_probe_hw_mode(struct r
+@@ -6149,7 +7527,7 @@ static int rt2800_probe_hw_mode(struct r
  
  	SET_IEEE80211_DEV(rt2x00dev->hw, rt2x00dev->dev);
  	SET_IEEE80211_PERM_ADDR(rt2x00dev->hw,
@@ -3109,7 +3228,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  						   EEPROM_MAC_ADDR_0));
  
  	/*
-@@ -6165,7 +7522,7 @@ static int rt2800_probe_hw_mode(struct r
+@@ -6165,7 +7543,7 @@ static int rt2800_probe_hw_mode(struct r
  	rt2x00dev->hw->max_report_rates = 7;
  	rt2x00dev->hw->max_rate_tries = 1;
  
@@ -3118,7 +3237,15 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	/*
  	 * Initialize hw_mode information.
-@@ -6200,6 +7557,10 @@ static int rt2800_probe_hw_mode(struct r
+@@ -6186,6 +7564,7 @@ static int rt2800_probe_hw_mode(struct r
+ 		   rt2x00_rf(rt2x00dev, RF2020) ||
+ 		   rt2x00_rf(rt2x00dev, RF3021) ||
+ 		   rt2x00_rf(rt2x00dev, RF3022) ||
++		   rt2x00_rf(rt2x00dev, RF3070) ||
+ 		   rt2x00_rf(rt2x00dev, RF3290) ||
+ 		   rt2x00_rf(rt2x00dev, RF3320) ||
+ 		   rt2x00_rf(rt2x00dev, RF3322) ||
+@@ -6200,6 +7579,10 @@ static int rt2800_probe_hw_mode(struct r
  		spec->supported_bands |= SUPPORT_BAND_5GHZ;
  		spec->num_channels = ARRAY_SIZE(rf_vals_3x);
  		spec->channels = rf_vals_3x;
@@ -3129,7 +3256,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  	} else if (rt2x00_rf(rt2x00dev, RF5592)) {
  		spec->supported_bands |= SUPPORT_BAND_5GHZ;
  
-@@ -6265,21 +7626,40 @@ static int rt2800_probe_hw_mode(struct r
+@@ -6265,21 +7648,40 @@ static int rt2800_probe_hw_mode(struct r
  
  	spec->channels_info = info;
  
@@ -3174,15 +3301,16 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		}
  	}
  
-@@ -6290,6 +7670,7 @@ static int rt2800_probe_hw_mode(struct r
+@@ -6290,6 +7692,8 @@ static int rt2800_probe_hw_mode(struct r
  	case RF3022:
  	case RF3320:
  	case RF3052:
 +	case RF3053:
++	case RF3070:
  	case RF3290:
  	case RF5360:
  	case RF5370:
-@@ -6328,6 +7709,7 @@ static int rt2800_probe_rt(struct rt2x00
+@@ -6328,6 +7732,7 @@ static int rt2800_probe_rt(struct rt2x00
  	case RT3352:
  	case RT3390:
  	case RT3572:
@@ -3238,7 +3366,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		queue->priv_size = sizeof(struct queue_entry_priv_mmio);
  		break;
  
-@@ -1205,7 +1214,7 @@ static void rt2800pci_queue_init(struct 
+@@ -1205,7 +1214,7 @@ static void rt2800pci_queue_init(struct
  		queue->limit = 64;
  		queue->data_size = AGGREGATION_SIZE;
  		queue->desc_size = TXD_DESC_SIZE;
@@ -3247,7 +3375,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  		queue->priv_size = sizeof(struct queue_entry_priv_mmio);
  		break;
  
-@@ -1213,7 +1222,7 @@ static void rt2800pci_queue_init(struct 
+@@ -1213,7 +1222,7 @@ static void rt2800pci_queue_init(struct
  		queue->limit = 8;
  		queue->data_size = 0; /* No DMA required for beacons */
  		queue->desc_size = TXD_DESC_SIZE;
@@ -3258,7 +3386,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
 --- a/drivers/net/wireless/rt2x00/rt2800usb.c
 +++ b/drivers/net/wireless/rt2x00/rt2800usb.c
-@@ -854,13 +854,7 @@ static void rt2800usb_queue_init(struct 
+@@ -854,13 +854,7 @@ static void rt2800usb_queue_init(struct
  	struct rt2x00_dev *rt2x00dev = queue->rt2x00dev;
  	unsigned short txwi_size, rxwi_size;
  
@@ -3273,7 +3401,24 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  
  	switch (queue->qid) {
  	case QID_RX:
-@@ -1194,6 +1188,40 @@ static struct usb_device_id rt2800usb_de
+@@ -977,6 +971,7 @@ static struct usb_device_id rt2800usb_de
+ 	{ USB_DEVICE(0x0411, 0x016f) },
+ 	{ USB_DEVICE(0x0411, 0x01a2) },
+ 	{ USB_DEVICE(0x0411, 0x01ee) },
++	{ USB_DEVICE(0x0411, 0x01a8) },
+ 	/* Corega */
+ 	{ USB_DEVICE(0x07aa, 0x002f) },
+ 	{ USB_DEVICE(0x07aa, 0x003c) },
+@@ -1181,6 +1176,8 @@ static struct usb_device_id rt2800usb_de
+ 	/* Linksys */
+ 	{ USB_DEVICE(0x13b1, 0x002f) },
+ 	{ USB_DEVICE(0x1737, 0x0079) },
++	/* Logitec */
++	{ USB_DEVICE(0x0789, 0x0170) },
+ 	/* Ralink */
+ 	{ USB_DEVICE(0x148f, 0x3572) },
+ 	/* Sitecom */
+@@ -1194,6 +1191,44 @@ static struct usb_device_id rt2800usb_de
  	/* Zinwell */
  	{ USB_DEVICE(0x5a57, 0x0284) },
  #endif
@@ -3287,6 +3432,8 @@ Contains the following changes from wireless-testing/master-2013-08-26:
 +	{ USB_DEVICE(0x050d, 0x1103) },
 +	/* Cameo */
 +	{ USB_DEVICE(0x148f, 0xf301) },
++	/* D-Link */
++	{ USB_DEVICE(0x2001, 0x3c1f) },
 +	/* Edimax */
 +	{ USB_DEVICE(0x7392, 0x7733) },
 +	/* Hawking */
@@ -3300,6 +3447,7 @@ Contains the following changes from wireless-testing/master-2013-08-26:
 +	{ USB_DEVICE(0x0789, 0x016b) },
 +	/* NETGEAR */
 +	{ USB_DEVICE(0x0846, 0x9012) },
++	{ USB_DEVICE(0x0846, 0x9013) },
 +	{ USB_DEVICE(0x0846, 0x9019) },
 +	/* Planex */
 +	{ USB_DEVICE(0x2019, 0xed19) },
@@ -3308,12 +3456,50 @@ Contains the following changes from wireless-testing/master-2013-08-26:
 +	/* Sitecom */
 +	{ USB_DEVICE(0x0df6, 0x0067) },
 +	{ USB_DEVICE(0x0df6, 0x006a) },
++	{ USB_DEVICE(0x0df6, 0x006e) },
 +	/* ZyXEL */
 +	{ USB_DEVICE(0x0586, 0x3421) },
 +#endif
  #ifdef CPTCFG_RT2800USB_RT53XX
  	/* Arcadyan */
  	{ USB_DEVICE(0x043e, 0x7a12) },
+@@ -1207,6 +1242,9 @@ static struct usb_device_id rt2800usb_de
+ 	{ USB_DEVICE(0x2001, 0x3c1c) },
+ 	{ USB_DEVICE(0x2001, 0x3c1d) },
+ 	{ USB_DEVICE(0x2001, 0x3c1e) },
++	{ USB_DEVICE(0x2001, 0x3c20) },
++	{ USB_DEVICE(0x2001, 0x3c22) },
++	{ USB_DEVICE(0x2001, 0x3c23) },
+ 	/* LG innotek */
+ 	{ USB_DEVICE(0x043e, 0x7a22) },
+ 	{ USB_DEVICE(0x043e, 0x7a42) },
+@@ -1229,12 +1267,17 @@ static struct usb_device_id rt2800usb_de
+ 	{ USB_DEVICE(0x043e, 0x7a32) },
+ 	/* AVM GmbH */
+ 	{ USB_DEVICE(0x057c, 0x8501) },
+-	/* D-Link DWA-160-B2 */
++	/* Buffalo */
++	{ USB_DEVICE(0x0411, 0x0241) },
++	/* D-Link */
+ 	{ USB_DEVICE(0x2001, 0x3c1a) },
++	{ USB_DEVICE(0x2001, 0x3c21) },
+ 	/* Proware */
+ 	{ USB_DEVICE(0x043e, 0x7a13) },
+ 	/* Ralink */
+ 	{ USB_DEVICE(0x148f, 0x5572) },
++	/* TRENDnet */
++	{ USB_DEVICE(0x20f4, 0x724a) },
+ #endif
+ #ifdef CPTCFG_RT2800USB_UNKNOWN
+ 	/*
+@@ -1304,6 +1347,7 @@ static struct usb_device_id rt2800usb_de
+ 	{ USB_DEVICE(0x1d4d, 0x0010) },
+ 	/* Planex */
+ 	{ USB_DEVICE(0x2019, 0xab24) },
++	{ USB_DEVICE(0x2019, 0xab29) },
+ 	/* Qcom */
+ 	{ USB_DEVICE(0x18e8, 0x6259) },
+ 	/* RadioShack */
 --- a/drivers/net/wireless/rt2x00/rt2x00.h
 +++ b/drivers/net/wireless/rt2x00/rt2x00.h
 @@ -211,6 +211,7 @@ struct channel_info {
@@ -3324,3 +3510,39 @@ Contains the following changes from wireless-testing/master-2013-08-26:
  };
  
  /*
+--- a/drivers/net/wireless/rt2x00/rt2x00pci.c
++++ b/drivers/net/wireless/rt2x00/rt2x00pci.c
+@@ -105,13 +105,11 @@ int rt2x00pci_probe(struct pci_dev *pci_
+ 		goto exit_release_regions;
+ 	}
+ 
+-	pci_enable_msi(pci_dev);
+-
+ 	hw = ieee80211_alloc_hw(sizeof(struct rt2x00_dev), ops->hw);
+ 	if (!hw) {
+ 		rt2x00_probe_err("Failed to allocate hardware\n");
+ 		retval = -ENOMEM;
+-		goto exit_disable_msi;
++		goto exit_release_regions;
+ 	}
+ 
+ 	pci_set_drvdata(pci_dev, hw);
+@@ -152,9 +150,6 @@ exit_free_reg:
+ exit_free_device:
+ 	ieee80211_free_hw(hw);
+ 
+-exit_disable_msi:
+-	pci_disable_msi(pci_dev);
+-
+ exit_release_regions:
+ 	pci_release_regions(pci_dev);
+ 
+@@ -179,8 +174,6 @@ void rt2x00pci_remove(struct pci_dev *pc
+ 	rt2x00pci_free_reg(rt2x00dev);
+ 	ieee80211_free_hw(hw);
+ 
+-	pci_disable_msi(pci_dev);
+-
+ 	/*
+ 	 * Free the PCI device data.
+ 	 */
