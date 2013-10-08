@@ -1,7 +1,7 @@
-From 72676457a9ea358eed70f9abe3b37e242727d567 Mon Sep 17 00:00:00 2001
+From c73371881c9277c9dad2184dfbc17b48484e6c2d Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sun, 24 Mar 2013 19:26:27 +0100
-Subject: [PATCH 08/51] rt2x00: rt2800pci: add a workaround for spurious
+Subject: [PATCH] rt2x00: rt2800pci: add a workaround for spurious
  TX_FIFO_STATUS interrupts
 
 Signed-off-by: Gabor Juhos <juhosg@openwrt.org>

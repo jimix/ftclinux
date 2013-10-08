@@ -1,7 +1,7 @@
-From 8da96f93013b8612e150797550955136da11ff19 Mon Sep 17 00:00:00 2001
+From f300609882c9b021403371c53c4dbb55746e0fcb Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Thu, 3 Oct 2013 18:57:23 +0200
-Subject: [PATCH 03/51] rt2x00: rt2800lib: fix VGC adjustment for RT5592
+Subject: [PATCH] rt2x00: rt2800lib: fix VGC adjustment for RT5592
 
 In commit 3d81535ea5940446510a8a5cee1c6ad23c90c753
 (rt2800: 5592: add chip specific vgc calculations)

@@ -1,7 +1,7 @@
-From 1d00423695b2881773f0ddd70f70739489b5b286 Mon Sep 17 00:00:00 2001
+From 94af9918acf9bef95debf4b7cf549c7abd91e190 Mon Sep 17 00:00:00 2001
 From: John Crispin <blogic@openwrt.org>
 Date: Sun, 17 Mar 2013 00:03:31 +0100
-Subject: [PATCH 18/51] rt2x00: make wmac loadable via OF on rt288x/305x SoC
+Subject: [PATCH] rt2x00: make wmac loadable via OF on rt288x/305x SoC
 
 This patch ads the match table to allow loading the wmac support from a
 devicetree.

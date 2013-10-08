@@ -1,0 +1,31 @@
+From 5541201a430f212827fa6cd2cbff5a8239593176 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 30 Sep 2013 14:08:01 +0200
+Subject: [PATCH] rt2x00: rt2800lib: update RFCSR vals for RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -6842,12 +6842,16 @@ static void rt2800_init_rfcsr_3883(struc
+ 	rt2800_rfcsr_write(rt2x00dev, 9, 0x08);
+ 	rt2800_rfcsr_write(rt2x00dev, 10, 0xd3);
+ 	rt2800_rfcsr_write(rt2x00dev, 11, 0x48);
+-	rt2800_rfcsr_write(rt2x00dev, 12, 0x12);
++	rt2800_rfcsr_write(rt2x00dev, 12, 0x1a);
+ 	rt2800_rfcsr_write(rt2x00dev, 13, 0x12);
+ 	rt2800_rfcsr_write(rt2x00dev, 14, 0x00);
+ 	rt2800_rfcsr_write(rt2x00dev, 15, 0x00);
+ 	rt2800_rfcsr_write(rt2x00dev, 16, 0x00);
+-	rt2800_rfcsr_write(rt2x00dev, 17, 0x26);
++
++	/* RFCSR 17 will be initialized later based on the
++	 * frequency offset stored in the EEPROM
++	 */
++
+ 	rt2800_rfcsr_write(rt2x00dev, 18, 0x40);
+ 	rt2800_rfcsr_write(rt2x00dev, 19, 0x00);
+ 	rt2800_rfcsr_write(rt2x00dev, 20, 0x00);

@@ -1,0 +1,24 @@
+From 0905a36ce85783af67ecde1d8148a3a44b87966c Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 7 Oct 2013 20:42:14 +0200
+Subject: [PATCH] rt2x00: rt2800lib: fix RF R32 register number in
+ config_channel_rf3853
+
+Fix a typo to use the correct register number.
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -2693,7 +2693,7 @@ static void rt2800_config_channel_rf3853
+ 	if (conf_is_ht40(conf))
+ 		rt2800_rfcsr_write(rt2x00dev, 32, 0x80);
+ 	else
+-		rt2800_rfcsr_write(rt2x00dev, 31, 0xd8);
++		rt2800_rfcsr_write(rt2x00dev, 32, 0xd8);
+ 
+ 	if (rf->channel <= 14)
+ 		rt2800_rfcsr_write(rt2x00dev, 34, 0x3c);

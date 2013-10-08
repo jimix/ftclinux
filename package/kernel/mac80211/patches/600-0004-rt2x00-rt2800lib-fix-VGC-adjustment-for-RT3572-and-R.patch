@@ -1,8 +1,7 @@
-From a4ffd225e267b60fdb5b8dbad81dd6ece3b23e96 Mon Sep 17 00:00:00 2001
+From b9838bb158d64037cf178e4fcb4ed8e46dea529d Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Tue, 1 Oct 2013 10:14:06 +0200
-Subject: [PATCH 04/51] rt2x00: rt2800lib: fix VGC adjustment for RT3572 and
- RT3593
+Subject: [PATCH] rt2x00: rt2800lib: fix VGC adjustment for RT3572 and RT3593
 
 The Ralink DPO_RT5572_LinuxSTA_2.6.1.3_20121022
 reference driver uses different RSSI threshold

@@ -1,0 +1,27 @@
+From ed7b511ab2fbfcdb0dd0294e69f291eacd5d8cf9 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 30 Sep 2013 13:51:57 +0200
+Subject: [PATCH] rt2x00: rt2800lib: limit tx power values for RF3853
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -2750,11 +2750,10 @@ static void rt2800_config_channel_rf3853
+ 	else
+ 		rt2800_rfcsr_write(rt2x00dev, 52, 0x05);
+ 
+-	/* FIXME: power settings needs revisit */
+ 	if (rf->channel <= 14) {
+-		pwr1 = info->default_power1;
+-		pwr2 = info->default_power2;
+-		pwr3 = info->default_power3;
++		pwr1 = info->default_power1 & 0x1f;
++		pwr2 = info->default_power2 & 0x1f;
++		pwr3 = info->default_power3 & 0x1f;
+ 	} else {
+ 		pwr1 = 0x48 | ((info->default_power1 & 0x18) << 1) |
+ 			(info->default_power1 & 0x7);

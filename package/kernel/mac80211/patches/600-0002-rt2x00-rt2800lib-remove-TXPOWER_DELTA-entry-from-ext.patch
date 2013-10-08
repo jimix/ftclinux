@@ -1,8 +1,8 @@
-From eb536b526ca8ea84d00550a7529f5077bbae4c54 Mon Sep 17 00:00:00 2001
+From 88773619986331cf853e90ccda9cc254719cd79f Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Tue, 1 Oct 2013 18:43:32 +0200
-Subject: [PATCH 02/51] rt2x00: rt2800lib: remove TXPOWER_DELTA entry from
- extended EEPROM map
+Subject: [PATCH] rt2x00: rt2800lib: remove TXPOWER_DELTA entry from extended
+ EEPROM map
 
 The TXPOWER_DELTA field of the regular EEPROM
 stores the TX power compensation value for HT40.

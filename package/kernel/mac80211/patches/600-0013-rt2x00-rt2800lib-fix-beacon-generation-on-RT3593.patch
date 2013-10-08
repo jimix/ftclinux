@@ -1,7 +1,7 @@
-From bb8add492a82ae0979c332ecf5aa6428f319d939 Mon Sep 17 00:00:00 2001
+From 70564a581fcc74879a49e7d71bbea18e5ed7acb4 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sat, 17 Aug 2013 19:31:42 +0200
-Subject: [PATCH 13/51] rt2x00: rt2800lib: fix beacon generation on RT3593
+Subject: [PATCH] rt2x00: rt2800lib: fix beacon generation on RT3593
 
 On the RT3593 chipset, the beacon registers are located
 in the high 8KB part of the shared memory.

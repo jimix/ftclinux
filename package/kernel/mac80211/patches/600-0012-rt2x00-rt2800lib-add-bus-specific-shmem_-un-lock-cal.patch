@@ -1,7 +1,7 @@
-From 109ca727fcd642594a3565b2292987342ab1b5f2 Mon Sep 17 00:00:00 2001
+From d95a94710159677fabc42e25c6ac564d05e8f6b9 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Wed, 21 Aug 2013 22:42:00 +0200
-Subject: [PATCH 12/51] rt2x00: rt2800lib: add bus specific shmem_{,un}lock
+Subject: [PATCH] rt2x00: rt2800lib: add bus specific shmem_{,un}lock
  callbacks
 
 Signed-off-by: Gabor Juhos <juhosg@openwrt.org>

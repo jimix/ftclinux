@@ -1,8 +1,8 @@
-From 4b068d6d0c42489f2dc9e60beec7a5a51960e906 Mon Sep 17 00:00:00 2001
+From 0b129dfdeedf79e562528f7cda6a9ffb6d05677c Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Thu, 3 Oct 2013 19:43:27 +0200
-Subject: [PATCH 07/51] rt2x00: rt2800lib: fix default VGC values for RT3572
- for the 5GHz band
+Subject: [PATCH] rt2x00: rt2800lib: fix default VGC values for RT3572 for the
+ 5GHz band
 
 The rt2x00 driver uses 0x22 as a default VGC value
 in VGC adjustment for the RT3572 chipset. In the

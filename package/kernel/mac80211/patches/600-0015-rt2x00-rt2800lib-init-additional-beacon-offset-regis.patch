@@ -1,8 +1,7 @@
-From 16e01f60ea7342764b35ab42214f23508c481374 Mon Sep 17 00:00:00 2001
+From b7a9f78f6a146064d94c24b2c6a30b5331e68fb1 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Mon, 2 Sep 2013 10:58:32 +0200
-Subject: [PATCH 15/51] rt2x00: rt2800lib: init additional beacon offset
- registers
+Subject: [PATCH] rt2x00: rt2800lib: init additional beacon offset registers
 
 Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 ---

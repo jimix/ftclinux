@@ -1,0 +1,24 @@
+From f17f53d056d0391894abba549fe11af5e97e0361 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Sat, 5 Oct 2013 10:19:28 +0200
+Subject: [PATCH] rt2x00: rt2800lib: fix BBP R82 value for RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -3507,10 +3507,7 @@ static void rt2800_config_channel(struct
+ 		    !rt2x00_rt(rt2x00dev, RT5392)) {
+ 			if (test_bit(CAPABILITY_EXTERNAL_LNA_BG,
+ 				     &rt2x00dev->cap_flags)) {
+-				if (rt2x00_rt(rt2x00dev, RT3883))
+-					rt2800_bbp_write(rt2x00dev, 82, 0x82);
+-				else
+-					rt2800_bbp_write(rt2x00dev, 82, 0x62);
++				rt2800_bbp_write(rt2x00dev, 82, 0x62);
+ 				rt2800_bbp_write(rt2x00dev, 75, 0x46);
+ 			} else {
+ 				if (rt2x00_rt(rt2x00dev, RT3593))

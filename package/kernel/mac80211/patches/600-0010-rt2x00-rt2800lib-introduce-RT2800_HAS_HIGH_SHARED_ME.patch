@@ -1,8 +1,7 @@
-From 04e2de8ee51ff96d3d590b77b1810da4a9b9fe8c Mon Sep 17 00:00:00 2001
+From dd9b8c48502a8a0958b0ba09f0bfe8db25ec4405 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sat, 17 Aug 2013 19:31:41 +0200
-Subject: [PATCH 10/51] rt2x00: rt2800lib: introduce
- RT2800_HAS_HIGH_SHARED_MEM flag
+Subject: [PATCH] rt2x00: rt2800lib: introduce RT2800_HAS_HIGH_SHARED_MEM flag
 
 Some chipsets have more than 16KB of shared memory.
 Introduce a new rt2800 specific flag to indicate that

@@ -1,7 +1,7 @@
-From 20ace324dc13f36e480eb90d624862aaa8e253e7 Mon Sep 17 00:00:00 2001
+From e74b7ff0f60a521848bffc06962a7616753c0cbb Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sat, 17 Aug 2013 19:31:42 +0200
-Subject: [PATCH 11/51] rt2x00: rt2800: serialize shared memory access
+Subject: [PATCH] rt2x00: rt2800: serialize shared memory access
 
 The shared memory of the rt2800 devices is accessible
 through the register offset range between 0x4000 and

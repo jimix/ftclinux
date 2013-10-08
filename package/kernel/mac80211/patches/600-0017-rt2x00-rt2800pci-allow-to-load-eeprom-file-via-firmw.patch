@@ -1,8 +1,8 @@
-From eaacb23b3be7e605953d36256602956249d1642e Mon Sep 17 00:00:00 2001
+From bcdf61bf1d4e039d13e9e4ff204879cefc93f2a8 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Wed, 27 Mar 2013 15:45:24 +0100
-Subject: [PATCH 17/51] rt2x00: rt2800pci: allow to load eeprom file via
- firmware api
+Subject: [PATCH] rt2x00: rt2800pci: allow to load eeprom file via firmware
+ api
 
 ---
  drivers/net/wireless/rt2x00/rt2800pci.c |   33 +++++++++++++++++++++++++++++++

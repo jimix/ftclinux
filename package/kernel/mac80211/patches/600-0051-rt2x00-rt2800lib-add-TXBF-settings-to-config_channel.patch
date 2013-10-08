@@ -1,0 +1,43 @@
+From b193d502e12858db72dcb2bcdde206268dc0315b Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 7 Oct 2013 20:20:51 +0200
+Subject: [PATCH] rt2x00: rt2800lib: add TXBF settings to
+ config_channel_rf3853
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -2630,6 +2630,8 @@ static void rt2800_config_channel_rf3853
+ 	u8 bbp;
+ 	u8 pwr1, pwr2, pwr3;
+ 
++	const bool txbf_enabled = false; /* TODO */
++
+ 	/* TODO: add band selection */
+ 
+ 	if (rf->channel <= 14)
+@@ -2715,7 +2717,8 @@ static void rt2800_config_channel_rf3853
+ 	else
+ 		rfcsr = 0x30;
+ 
+-	/* TODO: add TXBF support */
++	if (txbf_enabled)
++		rfcsr |= 0x40;
+ 
+ 	rt2800_rfcsr_write(rt2x00dev, 39, rfcsr);
+ 
+@@ -2739,7 +2742,9 @@ static void rt2800_config_channel_rf3853
+ 	else
+ 		rfcsr = 0x8a;
+ 
+-	/* TODO: add TXBF support */
++	if (txbf_enabled)
++		rfcsr |= 0x20;
++
+ 	rt2800_rfcsr_write(rt2x00dev, 49, rfcsr);
+ 
+ 	rt2800_rfcsr_write(rt2x00dev, 50, 0x86);

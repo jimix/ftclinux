@@ -1,8 +1,7 @@
-From 9df5565ea909aed08c9e2f9a9e6abe6bad14dc8f Mon Sep 17 00:00:00 2001
+From f48b9db88095152c2780c9f45a5f71d0a13bd89e Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Tue, 1 Oct 2013 10:27:30 +0200
-Subject: [PATCH 06/51] rt2x00: rt2800lib: fix VGC programming for RT3572 and
- RT3593
+Subject: [PATCH] rt2x00: rt2800lib: fix VGC programming for RT3572 and RT3593
 
 According to the DPO_RT5572_LinuxSTA_2.6.1.3_20121022
 reference driver, programming of the 'BBP 66' register

@@ -1,7 +1,7 @@
-From 93fab4e95b79f515a8eda79fbab5743f080b45d7 Mon Sep 17 00:00:00 2001
+From a858ec03a50d16ed0ee8d66d51ee5da4ee630a6b Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sun, 4 Aug 2013 14:36:11 +0200
-Subject: [PATCH 14/51] rt2x00: rt2800lib: add hw_beacon_count field to struct
+Subject: [PATCH] rt2x00: rt2800lib: add hw_beacon_count field to struct
  rt2800_drv_data
 
 Some chipsets can handle more than 8 beacons at once.

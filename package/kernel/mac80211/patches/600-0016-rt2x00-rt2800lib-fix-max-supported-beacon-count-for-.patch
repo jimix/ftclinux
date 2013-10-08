@@ -1,8 +1,7 @@
-From 4615857508227f04b8250754c7aa6f362b91866f Mon Sep 17 00:00:00 2001
+From 444c945f92209ec8c6e238606783a70d4240bd74 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Mon, 2 Sep 2013 11:00:06 +0200
-Subject: [PATCH 16/51] rt2x00: rt2800lib: fix max supported beacon count for
- RT3593
+Subject: [PATCH] rt2x00: rt2800lib: fix max supported beacon count for RT3593
 
 Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 ---

@@ -1,8 +1,8 @@
-From 29accba033b9d234d6add76dd29ed11319b9e8e4 Mon Sep 17 00:00:00 2001
+From 1c4a90558b2021dcc033e9492a2b8be656299139 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Sat, 17 Aug 2013 19:31:41 +0200
-Subject: [PATCH 09/51] rt2x00: rt2800lib: move rt2800_drv_data declaration
- into rt2800lib.h
+Subject: [PATCH] rt2x00: rt2800lib: move rt2800_drv_data declaration into
+ rt2800lib.h
 
 The rt2800_drv_data structure contains driver specific
 information. Move the declaration into the rt2800lib.h

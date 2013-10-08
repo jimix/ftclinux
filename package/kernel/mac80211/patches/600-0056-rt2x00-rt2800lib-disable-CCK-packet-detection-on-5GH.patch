@@ -1,0 +1,29 @@
+From 5a518ab5b9661379319827bbaafd5dbb3b888ce4 Mon Sep 17 00:00:00 2001
+From: Gabor Juhos <juhosg@openwrt.org>
+Date: Mon, 7 Oct 2013 21:58:11 +0200
+Subject: [PATCH] rt2x00: rt2800lib: disable CCK packet detection on 5GHz for
+ RT3883
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/net/wireless/rt2x00/rt2800lib.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -3396,7 +3396,14 @@ static void rt3883_bbp_adjust(struct rt2
+ 	rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, bbp);
+ 
+ 	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+-	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
++
++	if (rf->channel <= 14) {
++		rt2800_bbp_write(rt2x00dev, 70, 0x0a);
++	} else {
++		/* Disable CCK packet detection */
++		rt2800_bbp_write(rt2x00dev, 70, 0x00);
++	}
++
+ 	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+ 
+ 	if (rf->channel > 14) {

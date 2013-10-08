@@ -1,8 +1,8 @@
-From 72246cc23d09c79188ad2e26a3486b63d5f6e1bd Mon Sep 17 00:00:00 2001
+From e40d912ff8cfa59777f851e0042bea5a3af4a807 Mon Sep 17 00:00:00 2001
 From: Gabor Juhos <juhosg@openwrt.org>
 Date: Tue, 1 Oct 2013 17:34:46 +0200
-Subject: [PATCH 01/51] rt2x00: rt2800lib: remove TXMIXER_GAIN entries from
- the extended EEPROM map
+Subject: [PATCH] rt2x00: rt2800lib: remove TXMIXER_GAIN entries from the
+ extended EEPROM map
 
 The comments are indicating that the TXMIXER_GAIN_BG
 and TXMIXED_GAIN_A entries are overlapping with the
