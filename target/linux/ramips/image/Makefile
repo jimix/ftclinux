@@ -573,6 +573,7 @@ Image/Build/Profile/DIR645=$(call BuildFirmware/Seama/$(1),$(1),dir-645,DIR-645,
 
 omniembhpm_mtd_size=16449536
 Image/Build/Profile/OMNIEMBHPM=$(call BuildFirmware/CustomFlash/$(1),$(1),omni-emb-hpm,OMNI-EMB-HPM,$(omniembhpm_mtd_size))
+Image/Build/Profile/FTCOMNIEMBHPM=$(call BuildFirmware/CustomFlash/$(1),$(1),ftc-omni-emb-hpm,FTC-OMNI-EMB-HPM,$(omniembhpm_mtd_size))
 
 Image/Build/Profile/RTN56U=$(call BuildFirmware/Default8M/$(1),$(1),rt-n56u,RTN56U)
 
@@ -584,6 +585,7 @@ ifeq ($(SUBTARGET),rt3883)
 define Image/Build/Profile/Default
 	$(call Image/Build/Profile/DIR645,$(1))
 	$(call Image/Build/Profile/OMNIEMBHPM,$(1))
+	$(call Image/Build/Profile/FTCOMNIEMBHPM,$(1))
 	$(call Image/Build/Profile/RTN56U,$(1))
 	$(call Image/Build/Profile/TEW691GR,$(1))
 	$(call Image/Build/Profile/TEW692GR,$(1))
