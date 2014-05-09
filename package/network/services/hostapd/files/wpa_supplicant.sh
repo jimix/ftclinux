@@ -100,7 +100,7 @@ wpa_supplicant_setup_vif() {
 					priv_key="private_key=\"$priv_key\""
 					priv_key_pwd="private_key_passwd=\"$priv_key_pwd\""
 				;;
-				peap|ttls)
+				leap|peap|ttls)
 					config_get auth "$vif" auth
 					config_get identity "$vif" identity
 					config_get password "$vif" password
