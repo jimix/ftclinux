@@ -16,6 +16,9 @@ define Profile/FTCOMNIEMBHPM
 	PACKAGES+= samuel
 	PACKAGES+= dmesg
 	PACKAGES+= uboot-envtools
+	PACKAGES+= wpa-supplicant
+	PACKAGES+= wpa-cli
+	PACKAGES+= wpad
 	PACKAGES+= kmod-hid
 	PACKAGES+= kmod-input-joydev
 	PACKAGES+= kmod-input-joystick
