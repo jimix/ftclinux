@@ -19,10 +19,14 @@ define Profile/FTCOMNIEMBHPM
 	PACKAGES+= wpa-supplicant
 	PACKAGES+= wpa-cli
 	PACKAGES+= wpad
+	PACKAGES+= argp-standalone
+	PACKAGES+= v4l-utils
+	PACKAGES+= libv4l
 	PACKAGES+= kmod-hid
 	PACKAGES+= kmod-input-joydev
 	PACKAGES+= kmod-input-joystick
 	PACKAGES+= kmod-input-joystick-xpad
+	PACKAGES+= kmod-video-core
 	PACKAGES+= kmod-video-uvc
 	PACKAGES+= kmod-video-videobuf2
 	PACKAGES+= kmod-usb-hid
