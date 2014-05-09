@@ -23,6 +23,8 @@ define Profile/FTCOMNIEMBHPM
 	PACKAGES+= kmod-input-joydev
 	PACKAGES+= kmod-input-joystick
 	PACKAGES+= kmod-input-joystick-xpad
+	PACKAGES+= kmod-video-uvc
+	PACKAGES+= kmod-video-videobuf2
 	PACKAGES+= kmod-usb-hid
 	PACKAGES+= kmod-usbmon
 	# remove pacakages we don't want
